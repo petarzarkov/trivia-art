@@ -9,19 +9,15 @@ module.exports = {
         autoIncrement: true,
         type: Sequelize.BIGINT
       },
-      categoryId: {
-        allowNull: true,
-        defaultValue: 1,
-        type: Sequelize.INTEGER,
-        references: {
-          model: "tblCategories",
-          key: "id"
-        }
-      },
       question: {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING(1024)
+      },
+      difficulty: {
+        defaultValue: "easy",
+        allowNull: true,
+        type: Sequelize.STRING(64)
       },
       correctAnswer: {
         allowNull: false,
@@ -29,17 +25,30 @@ module.exports = {
       },
       incorrectAnswers: {
         allowNull: false,
-        type: Sequelize.JSONB
+        type: Sequelize.ARRAY(Sequelize.STRING)
       },
-      language: {
-        defaultValue: "en",
+      categoryId: {
         allowNull: true,
-        type: Sequelize.STRING(12)
+        defaultValue: 1,
+        type: Sequelize.BIGINT,
+        references: {
+          model: "tblCategories",
+          key: "id"
+        }
+      },
+      languageId: {
+        defaultValue: 1,
+        allowNull: true,
+        type: Sequelize.BIGINT,
+        references: {
+          model: "tblLanguages",
+          key: "id"
+        }
       },
     });
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.dropTable("tblCategories");
+    await queryInterface.dropTable("tblQuestions", { force: true });
   }
 };

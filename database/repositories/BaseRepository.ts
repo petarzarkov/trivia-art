@@ -49,12 +49,12 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     }
   };
 
-  public create = async ({ tableDTO, transaction, requestId } : { tableDTO: Omit<ModelDTO, "id">; transaction?: Transaction; requestId?: string }) => {
+  public create = async ({ tableDTO, transaction, requestId } : { tableDTO: Omit<ModelDTO, "id"> & { id: number }; transaction?: Transaction; requestId?: string }) => {
     return this.commit<ModelDTO>({
       requestId,
       command: () => this.table.create({
         ...tableDTO,
-        id: 0,
+        id: tableDTO.id || 0,
       } as unknown as MakeNullishOptional<ModelClass["_creationAttributes"]>,
       { transaction }
       ).then(this.mapTableToDTO)

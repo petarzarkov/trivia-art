@@ -1,6 +1,17 @@
 import SequelizeType, { QueryInterface } from "sequelize";
 
-const baseCategories = [{ category: "GeneralKnowledge", previewName: "General Knowledge" }];
+const baseCategories = [
+  {
+    id: 1,
+    category: "GeneralKnowledge",
+    previewName: "General Knowledge"
+  },
+  {
+    id: 2,
+    category: "Celebrities",
+    previewName: "Celebrities"
+  },
+];
 
 module.exports = {
   up: async (queryInterface: QueryInterface) => {

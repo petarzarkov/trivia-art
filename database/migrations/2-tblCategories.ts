@@ -6,7 +6,7 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
+        autoIncrement: false,
         type: Sequelize.BIGINT
       },
       category: {
@@ -19,10 +19,19 @@ module.exports = {
         defaultValue: "GeneralKnowledge",
         type: Sequelize.STRING(256)
       },
+      languageId: {
+        defaultValue: 1,
+        allowNull: true,
+        type: Sequelize.BIGINT,
+        references: {
+          model: "tblLanguages",
+          key: "id"
+        }
+      },
     });
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.dropTable("tblCategories");
+    await queryInterface.dropTable("tblCategories", { force: true });
   }
 };
