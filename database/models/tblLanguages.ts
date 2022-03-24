@@ -1,6 +1,6 @@
 import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
 
-@Table({ tableName: "tblLanguages", timestamps: true })
+@Table({ tableName: "tblLanguages", timestamps: false })
 export class TblLanguages extends Model {
 
   @PrimaryKey
@@ -12,10 +12,10 @@ export class TblLanguages extends Model {
     type: DataType.STRING(128),
     unique: true
   })
-  public lang: string;
+  declare public lang: string;
 
   @Column({ allowNull: true, type: DataType.STRING(256) })
-  public previewName?: string;
+  declare public previewName?: string;
 }
 
 export default TblLanguages;

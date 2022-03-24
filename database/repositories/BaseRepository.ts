@@ -1,5 +1,5 @@
 import { Model, Repository } from "sequelize-typescript";
-import { Transaction } from "sequelize";
+import { Attributes, Order, Transaction, WhereOptions } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
 
 export interface IDataSuccessResult<T> {
@@ -49,15 +49,23 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     }
   };
 
-  public create = async ({ tableDTO, transaction, requestId } : { tableDTO: Omit<ModelDTO, "id"> & { id: number }; transaction?: Transaction; requestId?: string }) => {
+  public create = async ({ tableDTO, transaction, requestId }: { tableDTO: Omit<ModelDTO, "id"> & { id: number }; transaction?: Transaction; requestId?: string }) => {
     return this.commit<ModelDTO>({
       requestId,
       command: () => this.table.create({
         ...tableDTO,
         id: tableDTO.id || 0,
       } as unknown as MakeNullishOptional<ModelClass["_creationAttributes"]>,
-      { transaction }
-      ).then(this.mapTableToDTO)
+      { transaction })
+        .then(this.mapTableToDTO)
+    });
+  };
+
+  public getAll = async ({ requestId, order, where }: { order?: Order; requestId?: string; where?: Partial<ModelDTO> } = {}) => {
+    return this.commit<ModelDTO[]>({
+      requestId,
+      command: () => this.table.findAll({ where: where as unknown as WhereOptions<Attributes<ModelClass>>, order })
+        .then(e => e?.map(this.mapTableToDTO))
     });
   };
 

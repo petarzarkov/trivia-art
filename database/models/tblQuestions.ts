@@ -2,35 +2,35 @@ import { Default, Column, DataType, Model, PrimaryKey, Table, ForeignKey } from 
 import TblCategories from "./tblCategories";
 import TblLanguages from "./tblLanguages";
 
-@Table({ tableName: "tblQuestions", timestamps: true })
+@Table({ tableName: "tblQuestions", timestamps: false })
 export class TblQuestions extends Model {
 
   @PrimaryKey
   @Column({ allowNull: false, autoIncrement: true, type: DataType.BIGINT })
   declare public id: number;
 
-  @Column({ allowNull: true, type: DataType.BIGINT })
   @ForeignKey(() => TblCategories)
   @Default(1)
-  public categoryId: number;
-
   @Column({ allowNull: true, type: DataType.BIGINT })
+  declare public categoryId: number;
+
   @ForeignKey(() => TblLanguages)
   @Default(1)
-  public languageId: number;
+  @Column({ allowNull: true, type: DataType.BIGINT })
+  declare public languageId: number;
 
   @Column({ allowNull: false, type: DataType.STRING(1024), unique: true })
-  public question: string;
+  declare public question: string;
 
-  @Column({ allowNull: true, type: DataType.STRING(64) })
   @Default("easy")
-  public difficulty: string;
+  @Column({ allowNull: true, type: DataType.STRING(64) })
+  declare public difficulty: string;
 
   @Column({ allowNull: false, type: DataType.STRING(256) })
-  public correctAnswer: string;
+  declare public correctAnswer: string;
 
   @Column({ allowNull: false, type: DataType.ARRAY(DataType.STRING) })
-  public incorrectAnswers: string[];
+  declare public incorrectAnswers: string[];
 }
 
 export default TblQuestions;

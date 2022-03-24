@@ -1,13 +1,15 @@
-import { TblCategories } from "../models";
+import { TblCategories } from "@db/models";
+import { ModelToDTO } from "@db/ModelToDTO";
 import { BaseRepository } from "./BaseRepository";
 
-export type CategoriesDTO = Pick<TblCategories, "id" | "category" | "previewName">;
+export type CategoriesDTO = ModelToDTO<TblCategories>;
 
 function mapTableToDTO(model: TblCategories): CategoriesDTO {
   return {
     id: model.id,
     category: model.category,
-    previewName: model.previewName
+    previewName: model.previewName,
+    languageId: model.languageId
   };
 }
 

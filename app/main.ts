@@ -1,20 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { fastify } from "fastify";
+import { HotLogger } from "hot-utils";
+import { connect } from "@db/connector";
+import { startServer } from "@app/server";
 
-const app = fastify({ logger: true });
+const log = HotLogger.createLogger("trivia-art/main");
 
-// Declare a route
-app.get("/", async () => {
-  return { hello: "world" };
-});
-
-// Run the server!
-const start = async () => {
-  try {
-    await app.listen(3000);
-  } catch (err) {
-    app.log.error(err);
-    process.exit(1);
-  }
+const main = async () => {
+  await connect();
+  await startServer();
+  // await Promise.all([connect, startServer]);
 };
-start();
+
+main().catch((err: Error) => {
+  log.error("Exception raised while starting Trivia Art.", { err });
+  setTimeout(() => process.exit(1), 1000);
+});
