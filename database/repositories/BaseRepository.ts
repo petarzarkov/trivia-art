@@ -1,6 +1,9 @@
 import { Model, Repository } from "sequelize-typescript";
 import { Attributes, Order, Transaction, WhereOptions } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
+import { HotLogger } from "hot-utils";
+
+const log = HotLogger.createLogger("@db/BaseRepo");
 
 export interface IDataSuccessResult<T> {
   isSuccess: true;
@@ -23,14 +26,14 @@ type CommonCommanderOpts<CommandReturnType> = {
 };
 
 export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, ModelDTO extends { id: number }> {
-  private table: Repository<ModelClass>;
-  private tableName: string;
-  private mapTableToDTO: (model: ModelClass) => ModelDTO;
+  public table: Repository<ModelClass>;
+  public tableName: string;
+  public mapTableToDTO: (model: ModelClass) => ModelDTO;
 
   constructor({ table, mapTableToDTO }: IBaseRepo<ModelClass, ModelDTO>) {
     if (!table) {
       const error = "Missing table model!";
-      console.warn(error);
+      log.warn(error);
       throw new Error(error);
     }
 
@@ -39,33 +42,57 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     this.mapTableToDTO = mapTableToDTO;
   }
 
-  private commit = async <CommandReturnType>({ command, requestId }: CommonCommanderOpts<CommandReturnType>) => {
+  public commit = async <CommandReturnType>({ command, requestId }: CommonCommanderOpts<CommandReturnType>) => {
     try {
       const res = await command();
       return withResult<CommandReturnType>(res);
     } catch (error) {
-      console.error("Error executing command", { err: error, requestId, tableName: this.tableName });
+      log.error("Error executing command", { err: <Error>error, requestId, tableName: this.tableName });
       return withError(error);
     }
   };
 
-  public create = async ({ tableDTO, transaction, requestId }: { tableDTO: Omit<ModelDTO, "id"> & { id: number }; transaction?: Transaction; requestId?: string }) => {
-    return this.commit<ModelDTO>({
+  public create = async ({ dto, transaction, requestId }: { dto: Omit<ModelDTO, "id"> & { id?: number }; transaction?: Transaction; requestId?: string }) => {
+    return this.commit<ModelDTO | null>({
       requestId,
       command: () => this.table.create({
-        ...tableDTO,
-        id: tableDTO.id || 0,
+        ...dto,
+        id: dto.id,
       } as unknown as MakeNullishOptional<ModelClass["_creationAttributes"]>,
       { transaction })
-        .then(this.mapTableToDTO)
+        .then(r => r ? this.mapTableToDTO(r) : null)
     });
   };
 
   public getAll = async ({ requestId, order, where }: { order?: Order; requestId?: string; where?: Partial<ModelDTO> } = {}) => {
-    return this.commit<ModelDTO[]>({
+    return this.commit<ModelDTO[] | null>({
       requestId,
       command: () => this.table.findAll({ where: where as unknown as WhereOptions<Attributes<ModelClass>>, order })
-        .then(e => e?.map(this.mapTableToDTO))
+        .then(e => e.length ? e?.map(this.mapTableToDTO) : null)
+    });
+  };
+
+  public getLast = async ({ requestId }: { requestId?: string } = {}) => {
+    return this.commit<ModelDTO | null>({
+      requestId,
+      command: () => this.table.findOne({ order: [["id", "DESC"]] })
+        .then(r => r && this.mapTableToDTO(r))
+    });
+  };
+
+  public getById = async ({ id, requestId }: { id: number; requestId?: string }) => {
+    return this.commit<ModelDTO | null>({
+      requestId,
+      command: () => this.table.findOne({ where: { id } })
+        .then(r => r && this.mapTableToDTO(r))
+    });
+  };
+
+  public findOne = async ({ where, order, requestId }: { where: Partial<ModelDTO>; order?: Order; requestId?: string }) => {
+    return this.commit<ModelDTO | null>({
+      requestId,
+      command: () => this.table.findOne({ where: where as unknown as WhereOptions<Attributes<ModelClass>>, order })
+        .then(r => r && this.mapTableToDTO(r))
     });
   };
 

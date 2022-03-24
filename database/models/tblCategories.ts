@@ -5,7 +5,7 @@ import TblLanguages from "./tblLanguages";
 export class TblCategories extends Model {
 
   @PrimaryKey
-  @Column({ allowNull: false, autoIncrement: false, type: DataType.BIGINT })
+  @Column({ allowNull: false, autoIncrement: true, type: DataType.BIGINT })
   declare public id: number;
 
   @Column({

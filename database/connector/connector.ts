@@ -17,10 +17,12 @@ pg.types.setTypeParser(1231, parseFloat); // NUMERIC_ARRAY: 1231
 export const connect = async ({ options, onConnect, models }:
 { options?: Options; onConnect?: () => Promise<void>; models?: DBModels } = {}) => {
   try {
-    await establishConnection({ config: options || getOptions(), models });
+    const sequelizeInstance = await establishConnection({ config: options || getOptions(), models });
     if (onConnect) {
       await onConnect();
     }
+
+    return sequelizeInstance;
   } catch (error) {
     log.error("Unable to connect DB, retrying", { err: <Error>error });
     setTimeout(connect, 15000, options, onConnect, models);
@@ -28,8 +30,8 @@ export const connect = async ({ options, onConnect, models }:
   }
 };
 
+let sequelize: Sequelize | undefined;
 const establishConnection = async ({ config, models }: { config: SequelizeOptions; models?: DBModels }): Promise<Sequelize> => {
-  let sequelize: Sequelize | undefined;
   // On retry these steps are unessessary
   if (!sequelize) {
     const defaults: Partial<SequelizeOptions> = {

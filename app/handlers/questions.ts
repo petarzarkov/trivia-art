@@ -8,7 +8,7 @@ export const questions = async (
   _req: FastifyRequest<RouteGenericInterface, Server, IncomingMessage, unknown>,
   _reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>
 ) => {
-  const questions = await QuestionsRepo.getAll();
+  const questions = await QuestionsRepo.getRandom();
 
   return { questions };
 };

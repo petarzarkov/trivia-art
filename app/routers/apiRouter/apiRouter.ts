@@ -2,12 +2,12 @@ import { questions } from "@app/handlers";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const apiRouter = (server: FastifyInstance, _options: FastifyPluginOptions, done: (err?: Error | undefined) => void) => {
+export const apiRouter = (app: FastifyInstance, _options: FastifyPluginOptions, next: (err?: Error | undefined) => void) => {
 
-  server.get("/questions", {
+  app.get("/questions", {
     handler: questions
   });
 
-  done();
+  next();
 };
 

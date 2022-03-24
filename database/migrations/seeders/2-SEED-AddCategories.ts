@@ -2,12 +2,10 @@ import SequelizeType, { QueryInterface } from "sequelize";
 
 const baseCategories = [
   {
-    id: 1,
-    category: "GeneralKnowledge",
+    category: "General Knowledge",
     previewName: "General Knowledge"
   },
   {
-    id: 2,
     category: "Celebrities",
     previewName: "Celebrities"
   },
@@ -19,6 +17,8 @@ module.exports = {
   },
 
   down: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
-    await queryInterface.bulkDelete("tblCategories", { category: { [Sequelize.Op.in]: baseCategories.map(r => r.category) } });
+    await queryInterface.bulkDelete(
+      "tblCategories",
+      { category: { [Sequelize.Op.in]: baseCategories.map(r => r.category) } });
   }
 };

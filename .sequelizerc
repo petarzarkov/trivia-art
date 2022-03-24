@@ -1,6 +1,6 @@
 const path = require('path');
 
-const buildPath = path.resolve(process.cwd(), "../..", "build/database/migrations");
+const buildPath = path.resolve(process.cwd(), "build/database/migrations");
 
 module.exports = {
   'config': path.resolve(buildPath, 'config/sequelize.config.js'),

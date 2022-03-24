@@ -6,7 +6,7 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        autoIncrement: false,
+        autoIncrement: true,
         type: Sequelize.BIGINT
       },
       category: {
@@ -32,6 +32,6 @@ module.exports = {
   },
 
   down: async (queryInterface: QueryInterface) => {
-    await queryInterface.dropTable("tblCategories", { force: true });
+    await queryInterface.dropTable("tblCategories", { force: true, cascade: true });
   }
 };
