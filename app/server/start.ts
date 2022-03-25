@@ -1,25 +1,37 @@
 import { fastify } from "fastify";
+import { fastifySwagger } from "fastify-swagger";
 import { Sequelize } from "sequelize";
 import { HotLogger } from "hot-utils";
 import { apiRouter, serviceRouter } from "@app/routers";
 import { addSequelizePlugin, addLoggerPlugin } from "./plugins";
+import { swagDocs } from "./swagger";
+import { SERVER_PORT } from "@app/constants";
 
 const log = HotLogger.createLogger("server");
 
 export const startServer = async (sq: Sequelize | undefined) => {
-  const app = fastify({ logger: true });
+  const app = fastify({ logger: true, requestIdLogLabel: "requestId" });
 
   app.register(addLoggerPlugin, { logger: log });
-  app.register(addSequelizePlugin, { sq });
   app.register(serviceRouter);
+  app.register(fastifySwagger, swagDocs);
+  app.register(addSequelizePlugin, { sq });
   app.register(apiRouter, { prefix: "api" });
 
+  app.ready(err => {
+    if (err) {
+      app.logger.error("App Error", { err });
+    }
+
+    app.swagger();
+  });
+
   try {
-    app.listen(3000, () => {
-      log.info("Service started", { port: 3000 });
+    app.listen(SERVER_PORT, () => {
+      log.info("Service started", { port: SERVER_PORT });
     });
   } catch (err) {
-    log.error("Error starting server", { err: <Error>err, port: 3000 });
+    log.error("Error starting server", { err: <Error>err, port: SERVER_PORT });
     process.exit(1);
   }
 

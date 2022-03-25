@@ -8,7 +8,8 @@
     "prebuild": "rimraf build cache/ts.build",
     "build": "tsc -p tsconfig.json --diagnostics",
     "postbuild": "tsc-alias",
-    "build:watch": "npm run build -- --watch",
+    "build:watch": "tsc -w",
+    "bwa": "tsc-alias -w",
     "bns": "npm run build && npm run start",
     "predb": "rimraf build/app/database cache/ts.build && npm run build",
     "db:create": "npm run predb && node .bin/exec . sequelize db:create",
@@ -39,6 +40,7 @@
   "dependencies": {
     "fastify": "^3.27.4",
     "fastify-plugin": "^3.0.1",
+    "fastify-swagger": "^5.0.0",
     "hot-utils": "^1.3.4",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
