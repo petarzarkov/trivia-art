@@ -22,13 +22,16 @@ export const questionsSchema: FastifySchema & Record<string, unknown> = {
         isSuccess: { type: "boolean" },
         result: {
           type: "array",
+          nullable: true,
           items: {
             type: "object",
             required: ["id", "categoryId", "languageId", "difficulty", "question", "correctAnswer", "incorrectAnswers"],
             properties: {
               id: { type: "number" },
               categoryId: { type: "number" },
+              category: { type: "string" },
               languageId: { type: "number" },
+              lang: { type: "string" },
               difficulty: { type: "string" },
               question: { type: "string" },
               correctAnswer: { type: "string" },
@@ -37,7 +40,8 @@ export const questionsSchema: FastifySchema & Record<string, unknown> = {
           }
         },
       }
-    }
+    },
+    400: { "$ref": "#/responses/NotFound" }
   },
   security: [
     {

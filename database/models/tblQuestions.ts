@@ -1,4 +1,4 @@
-import { Default, Column, DataType, Model, PrimaryKey, Table, ForeignKey } from "sequelize-typescript";
+import { Default, Column, DataType, Model, PrimaryKey, Table, HasOne } from "sequelize-typescript";
 import TblCategories from "./tblCategories";
 import TblLanguages from "./tblLanguages";
 
@@ -9,12 +9,12 @@ export class TblQuestions extends Model {
   @Column({ allowNull: false, autoIncrement: true, type: DataType.BIGINT })
   declare public id: number;
 
-  @ForeignKey(() => TblCategories)
+  @HasOne(() => TblCategories, { foreignKey: "id", sourceKey: "categoryId", as: "tblCategories" })
   @Default(1)
   @Column({ allowNull: true, type: DataType.BIGINT })
   declare public categoryId: number;
 
-  @ForeignKey(() => TblLanguages)
+  @HasOne(() => TblLanguages, { foreignKey: "id", sourceKey: "languageId", as: "tblLanguages" })
   @Default(1)
   @Column({ allowNull: true, type: DataType.BIGINT })
   declare public languageId: number;

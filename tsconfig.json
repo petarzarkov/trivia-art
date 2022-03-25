@@ -25,9 +25,10 @@
     "tsBuildInfoFile": "./cache/ts.build",
     "paths": {
       "@db/*": ["./database/*"],
+      "@contracts/*": ["./contracts/*"],
       "@feeder/*": ["./feeder/*"],
       "@app/*": ["./app/*"],
     }
   },
-  "include": ["./app", "./database", "./feeder"]
+  "include": ["./app", "./database", "./contracts", "./feeder"]
 }

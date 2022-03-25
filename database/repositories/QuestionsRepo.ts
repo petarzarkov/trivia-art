@@ -3,8 +3,10 @@ import { BaseRepository } from "./BaseRepository";
 import { ModelToDTO } from "@db/ModelToDTO";
 import { Attributes, WhereOptions, literal } from "sequelize";
 import { MIN_QUESTIONS } from "@app/constants";
+import { Expand } from "hot-utils";
 
 export type QuestionsDTO = ModelToDTO<TblQuestions>;
+export type RandomQuestionsDTO = Expand<QuestionsDTO & { category?: string; lang?: string }>;
 
 function mapTableToDTO(model: TblQuestions): QuestionsDTO {
   return {
@@ -27,19 +29,7 @@ class QuestionsRepository extends BaseRepository<TblQuestions, QuestionsDTO> {
   }
 
   public getRandom = async ({ where, requestId, amount = MIN_QUESTIONS }: { amount?: number; where?: WhereOptions<QuestionsDTO>; requestId?: string } = {}) => {
-    return this.commit<QuestionsDTO[] | null>({
-      requestId,
-      command: () => this.table.findAll({
-        where: where as unknown as WhereOptions<Attributes<TblQuestions>>,
-        order: literal("random()"),
-        limit: amount
-      }).then(e => e.length ? e?.map(this.mapTableToDTO) : null)
-    });
-  };
-
-  // TODO
-  public getRandomТ = async ({ where, requestId, amount = MIN_QUESTIONS }: { amount?: number; where?: WhereOptions<QuestionsDTO>; requestId?: string } = {}) => {
-    return this.commit<QuestionsDTO[] | null>({
+    return this.commit<RandomQuestionsDTO[] | null>({
       requestId,
       command: () => this.table.findAll({
         where: where as unknown as WhereOptions<Attributes<TblQuestions>>,
@@ -48,8 +38,8 @@ class QuestionsRepository extends BaseRepository<TblQuestions, QuestionsDTO> {
         include: [{ model: TblCategories, attributes: ["category"] }, { model: TblLanguages, attributes: ["lang"] }]
       }).then(e => e.length ? e?.map(r => ({
         ...this.mapTableToDTO(r),
-        category: (r as unknown as { category?: string }).category,
-        lang: (r as unknown as { lang?: string }).lang
+        category: (r as unknown as { tblCategories?: { category?: string } })?.tblCategories?.category,
+        lang: (r as unknown as { tblLanguages?: { lang?: string } })?.tblLanguages?.lang,
       })) : null)
     });
   };

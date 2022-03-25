@@ -2,19 +2,9 @@ import { Model, Repository } from "sequelize-typescript";
 import { Attributes, Order, Transaction, WhereOptions } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
 import { HotLogger } from "hot-utils";
+import { withError, withResult } from "@contracts/APIResults";
 
 const log = HotLogger.createLogger("@db/BaseRepo");
-
-export interface IDataSuccessResult<T> {
-  isSuccess: true;
-  result: T | undefined;
-}
-
-export interface IDataErrorResult {
-  isSuccess: false;
-  error: Error | unknown;
-}
-
 interface IBaseRepo<ModelClass, ModelDTO> {
   table: Repository<ModelClass>;
   mapTableToDTO: (model: ModelClass) => ModelDTO;
@@ -97,6 +87,3 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
   };
 
 }
-
-export const withResult = <T>(data: T | undefined): IDataSuccessResult<T> => ({ isSuccess: true, result: data });
-export const withError = (error: Error | unknown): IDataErrorResult => ({ isSuccess: false, error });
