@@ -40,7 +40,8 @@ const establishConnection = async ({ config, models }: { config: SequelizeOption
       pool: { max: 50 },
       benchmark: true,
       logging: false,
-      models: models || [TblLanguages, TblCategories, TblQuestions]
+      models: models || [TblLanguages, TblCategories, TblQuestions],
+      logQueryParameters: true,
     };
 
     sequelize = new Sequelize({ ...defaults, ...config });

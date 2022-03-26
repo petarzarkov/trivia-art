@@ -1,4 +1,5 @@
 import { MAX_QUESTIONS, MIN_QUESTIONS } from "@app/constants";
+import { generalErrors } from "@app/server/swagger/generalErrors";
 import { FastifySchema } from "fastify";
 
 export const questionsSchema: FastifySchema & Record<string, unknown> = {
@@ -41,7 +42,7 @@ export const questionsSchema: FastifySchema & Record<string, unknown> = {
         },
       }
     },
-    400: { "$ref": "#/responses/NotFound" }
+    ...generalErrors
   },
   security: [
     {

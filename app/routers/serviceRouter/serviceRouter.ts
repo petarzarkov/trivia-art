@@ -1,3 +1,4 @@
+import { TriviaFeeder } from "@feeder/main";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -25,6 +26,21 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
         healthy: false
       };
     }
+  });
+
+  app.get("/feeds", async () => {
+    if (TriviaFeeder.isRunning) {
+      TriviaFeeder.stop();
+
+      return {
+        running: false
+      };
+    }
+
+    TriviaFeeder.start();
+    return {
+      running: true
+    };
   });
 
   next();

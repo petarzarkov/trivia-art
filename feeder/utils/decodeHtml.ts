@@ -13,8 +13,8 @@ export const decodeHtml = (text: string) => {
       return match;
     });
 
-    return decoded;
+    return decoded.replaceAll("\"", "'");
   } catch (error) {
-    return text;
+    return text.replaceAll("\"", "'");
   }
 };

@@ -1,4 +1,4 @@
-import { CategoriesRepo, QuestionsRepo } from "@db/repositories";
+import { CategoriesDTO, CategoriesRepo, QuestionsRepo } from "@db/repositories";
 import { HotRequests, HotLogger } from "hot-utils";
 import { decodeHtml } from "./utils";
 
@@ -13,7 +13,7 @@ export type QuestionRaw = {
   incorrect_answers: string[];
 };
 
-const feedQuestion = async () => {
+const getQuestions = async () => {
   return HotRequests.get<Record<string, unknown>, { results?: QuestionRaw[] | undefined }>({
     url: "https://opentdb.com/api.php?amount=50",
     options: {
@@ -27,43 +27,81 @@ const feedQuestion = async () => {
         correct_answer: decodeHtml(rr.correct_answer),
         incorrect_answers: rr.incorrect_answers.map(decodeHtml)
       }));
+      const categories = openQs.map(r => r.category);
 
-      for (const question of openQs) {
-        const hasQuestion = await QuestionsRepo.findOne({ where: { question: question.question } });
-        if (hasQuestion.isSuccess && hasQuestion.result) {
-          continue;
-        }
-
-        let categoryId: number | undefined;
-        if (question.category) {
-          const hasCategory = await CategoriesRepo.findOne({ where: { category: question.category } });
-          if (hasCategory.isSuccess) {
-            if (!hasCategory.result) {
-              const d = await CategoriesRepo.create({ dto: { category: question.category, languageId: 1, previewName: question.category } });
-              categoryId = d.isSuccess && d.result?.id || 1;
-            } else {
-              categoryId = hasCategory.result.id;
-            }
-          }
-        }
-
-        await QuestionsRepo.create({
-          dto: {
-            categoryId: categoryId || 1,
-            correctAnswer: question.correct_answer,
-            incorrectAnswers: question.incorrect_answers,
-            difficulty: question.difficulty,
-            languageId: 1,
-            question: question.question
-          }
-        });
-      }
+      return {
+        categories,
+        questions: openQs
+      };
     }
   });
 };
 
+const processQuestions = async ({ categories, questions }:{
+  categories: string[];
+  questions: QuestionRaw[];
+}) => {
+  const currCategories = await CategoriesRepo.getAll();
+  if (!currCategories.isSuccess || !currCategories?.result?.length) {
+    return;
+  }
+
+  const foundCategories = currCategories.result.map(cat => cat.category);
+  const categoriesToAdd = categories.reduce((prev, curr) => {
+    if (!prev.includes(curr) || !foundCategories.includes(curr)) {
+      prev.push(curr);
+    }
+
+    return prev;
+  }, [] as string[]);
+
+  let addedCategories: CategoriesDTO[] | null | undefined = [];
+  if (categoriesToAdd.length) {
+    const createdCats = await CategoriesRepo.createBulk({
+      dtos: categoriesToAdd.map(ca => ({
+        category: ca,
+        previewName: ca,
+        languageId: 1
+      }))
+    });
+
+    if (!createdCats.isSuccess) {
+      return;
+    }
+    addedCategories = createdCats.result;
+  }
+
+  const allCategories: CategoriesDTO[] = addedCategories?.length ? [ ...currCategories.result, ...addedCategories] : [ ...currCategories.result];
+  const createdQuestions = await QuestionsRepo.createBulk({
+    dtos: questions.map(question => ({
+      categoryId: allCategories.find(c => c.category === question.category)?.id || 1,
+      correctAnswer: question.correct_answer,
+      incorrectAnswers: question.incorrect_answers,
+      difficulty: question.difficulty,
+      languageId: 1,
+      question: question.question
+    }))
+  });
+
+  return {
+    allCategories,
+    createdQuestions
+  };
+};
+
+const feed = async () => {
+  const newQ = await getQuestions();
+
+  if (newQ?.categories?.length && newQ?.questions?.length) {
+    return processQuestions({
+      categories: newQ.categories,
+      questions: newQ.questions
+    });
+  }
+};
+
 export const feedQuestions = (n = 3) => {
-  const promises = [...Array(n).keys()].map(feedQuestion);
+  const promises = [...Array(n).keys()].map(feed);
 
   return Promise.allSettled(promises);
 };

@@ -1,4 +1,5 @@
 import { SwaggerOptions } from "fastify-swagger";
+import { generalError } from "./generalErrors";
 
 export const swagDocs: SwaggerOptions = {
   routePrefix: "/documentation",
@@ -26,57 +27,8 @@ export const swagDocs: SwaggerOptions = {
         in: "header"
       }
     },
-    responses: {
-      "BadRequest": {
-        description: "Error response",
-        schema: {
-          $ref: "#/definitions/BadRequest"
-        }
-      },
-      "NotFound": {
-        description: "Not found response",
-        schema: {
-          $ref: "#/definitions/NotFound"
-        }
-      },
-      "Error": {
-        description: "Error response",
-        schema: {
-          $ref: "#/definitions/Error"
-        }
-      }
-    },
     definitions: {
-      "NotFound": {
-        type: "object",
-        properties: {
-          isSuccess: { type: "boolean", default: false },
-          error: {
-            type: "string",
-            nullable: true,
-          }
-        }
-      },
-      "BadRequest": {
-        type: "object",
-        properties: {
-          isSuccess: { type: "boolean", default: false },
-          error: {
-            type: "string",
-            nullable: true,
-          }
-        }
-      },
-      "Error": {
-        type: "object",
-        properties: {
-          isSuccess: { type: "boolean", default: false },
-          error: {
-            type: "string",
-            nullable: true,
-          }
-        }
-      }
+      "GeneralError": generalError
     }
   },
   uiConfig: {

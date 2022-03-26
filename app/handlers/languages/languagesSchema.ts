@@ -1,3 +1,4 @@
+import { generalErrors } from "@app/server/swagger/generalErrors";
 import { FastifySchema } from "fastify";
 
 export const languagesSchema: FastifySchema & Record<string, unknown> = {
@@ -23,7 +24,8 @@ export const languagesSchema: FastifySchema & Record<string, unknown> = {
           }
         },
       }
-    }
+    },
+    ...generalErrors
   },
   security: [
     {
