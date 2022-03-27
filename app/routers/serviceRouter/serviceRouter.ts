@@ -1,4 +1,5 @@
-import { TriviaFeeder } from "@feeder/main";
+
+import { FeedsMgr } from "@feeder/FeederManager";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,15 +30,15 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
   });
 
   app.get("/feeds", async () => {
-    if (TriviaFeeder.isRunning) {
-      TriviaFeeder.stop();
+    if (FeedsMgr.areRunning) {
+      FeedsMgr.stopAll();
 
       return {
         running: false
       };
     }
 
-    TriviaFeeder.start();
+    FeedsMgr.startAll();
     return {
       running: true
     };
