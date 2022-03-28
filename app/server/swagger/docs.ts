@@ -13,8 +13,7 @@ export const swagDocs: SwaggerOptions = {
       url: "https://github.com/petarzarkov/trivia-art",
       description: "Find more info here"
     },
-    // host: "localhost",
-    schemes: ["http"],
+    schemes: [process.env.NODE_ENV === "production" ? "https" : "http"],
     consumes: ["application/json"],
     produces: ["application/json"],
     tags: [

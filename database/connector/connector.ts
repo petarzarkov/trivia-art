@@ -24,7 +24,7 @@ export const connect = async ({ options, onConnect, models }:
 
     return sequelizeInstance;
   } catch (error) {
-    log.error("Unable to connect DB, retrying", { err: <Error>error });
+    log.error("Unable to connect DB, retrying", { err: <Error>error, options });
     setTimeout(connect, 15000, options, onConnect, models);
     return;
   }
@@ -52,7 +52,7 @@ const establishConnection = async ({ config, models }: { config: SequelizeOption
     log?.info(`Connection has been established successfully to ${<string>config.database}`,
       { data: { port: config.port } });
   } catch (err) {
-    log?.fatal(`Unable to connect to the ${<string>config.database} database`, { err: <Error>err, data: { port: config.port } });
+    log?.fatal(`Unable to connect to the ${<string>config.database} database`, { err: <Error>err, data: { config } });
   }
 
   return sequelize;
