@@ -21,7 +21,8 @@
     "db:seed:undo": "node .bin/exec . sequelize db:seed:undo:all",
     "db:revert": "npm run predb && npm run db:seed:undo && npm run db:migrate:undo",
     "lint": "eslint -c .eslintrc.js --ext .ts,.tsx --max-warnings 0",
-    "lint:fix": "npm run lint --fix"
+    "lint:fix": "npm run lint --fix",
+    "heroku-postbuild": "npm run db:update"
   },
   "repository": {
     "type": "git",
