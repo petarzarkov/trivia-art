@@ -31,7 +31,7 @@ export const startServer = async (logger: HotLogger, sq: Sequelize | undefined) 
   });
 
   try {
-    app.listen(SERVER_PORT, () => {
+    app.listen(SERVER_PORT, "0.0.0.0", () => {
       app.logger.info("Service started", { port: SERVER_PORT });
     });
   } catch (err) {
