@@ -6,5 +6,6 @@ export const getOptions = (): Options => ({
   database: process.env.DB_NAME || "trivia-art",
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5445,
-  dialect: process.env.DB_DIALECT as Dialect || "postgres"
+  dialect: process.env.DB_DIALECT as Dialect || "postgres",
+  ssl: process.env.NODE_ENV === "production"
 });
