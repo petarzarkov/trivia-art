@@ -20,7 +20,7 @@
     "db:seed": "node .bin/exec . sequelize db:seed:all",
     "db:seed:undo": "node .bin/exec . sequelize db:seed:undo:all",
     "db:revert": "npm run predb && npm run db:seed:undo && npm run db:migrate:undo",
-    "lint": "eslint -c .eslintrc.js --ext .ts,.tsx ./src --max-warnings 0",
+    "lint": "eslint -c .eslintrc.js --ext .ts,.tsx --max-warnings 0",
     "lint:fix": "npm run lint --fix"
   },
   "repository": {
