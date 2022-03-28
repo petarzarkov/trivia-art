@@ -34,7 +34,8 @@ module.exports = {
         references: {
           model: "tblCategories",
           key: "id"
-        }
+        },
+        onDelete: "cascade"
       },
       languageId: {
         defaultValue: 1,

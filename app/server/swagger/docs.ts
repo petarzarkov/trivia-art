@@ -24,15 +24,16 @@ export const swagDocs: SwaggerOptions = {
       apitoken: {
         type: "apiKey",
         name: "apitoken",
-        in: "header"
+        in: "header",
+        description: "API token required in headers"
       }
     },
     definitions: {
       "GeneralError": generalError
-    }
+    },
   },
   uiConfig: {
-    docExpansion: "full",
+    docExpansion: "list",
     deepLinking: false
   },
   uiHooks: {

@@ -6,7 +6,7 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        autoIncrement: false,
+        autoIncrement: true,
         type: Sequelize.BIGINT
       },
       lang: {

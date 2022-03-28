@@ -4,7 +4,7 @@ import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript
 export class TblLanguages extends Model {
 
   @PrimaryKey
-  @Column({ allowNull: false, autoIncrement: false, type: DataType.BIGINT })
+  @Column({ allowNull: false, autoIncrement: true, type: DataType.BIGINT })
   declare public id: number;
 
   @Column({

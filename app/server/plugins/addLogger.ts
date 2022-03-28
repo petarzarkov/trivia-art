@@ -8,6 +8,9 @@ declare module "fastify" {
   export interface FastifyInstance {
     logger: HotLogger;
   }
+  export interface FastifyRequest {
+    logger: HotLogger;
+  }
 }
 
 const parseRequestLog = (request: FastifyRequest) => ({
@@ -26,6 +29,7 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
   fastify.decorate("logger", options.logger);
 
   fastify.addHook("onRequest", (request, _reply, done) => {
+    request.logger = options.logger;
     fastify.logger.info(`Received ${request.method} request`, { requestId: request.id, request: parseRequestLog(request) });
     done();
   });
@@ -42,12 +46,11 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
       return;
     }
 
-    fastify.logger.error(error.message, { err: error, requestId: req.id });
     reply.send(error);
   });
 
   fastify.addHook("onError", (request, reply, error, done) => {
-    fastify.logger.error(`Error on ${request.method} request`, { err: error, requestId: request.id, responseTime: reply.getResponseTime() });
+    fastify.logger.error(`Error on ${request.method} request`, { err: error, requestId: request.id, responseTime: reply.getResponseTime(), request: parseRequestLog(request) });
     done();
   });
 

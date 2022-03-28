@@ -1,5 +1,5 @@
 import { Model, Repository } from "sequelize-typescript";
-import { Attributes, FindOptions, Order, Transaction, WhereOptions, UpdateOptions } from "sequelize";
+import { Attributes, FindOptions, Order, Transaction, WhereOptions, UpdateOptions, Op } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
 import { HotLogger } from "hot-utils";
 import { withError, withResult } from "@contracts/APIResults";
@@ -128,6 +128,14 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
       requestId,
       commandName: this.delById.name,
       command: () => this.table.destroy({ where: { id } })
+    });
+  };
+
+  public delByIds = async ({ ids, requestId }: { ids: number[]; requestId?: string }) => {
+    return this.commit<number>({
+      requestId,
+      commandName: this.delByIds.name,
+      command: (logging) => this.table.destroy({ where: { id: { [Op.in]: ids } }, logging })
     });
   };
 
