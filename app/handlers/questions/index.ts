@@ -1,2 +1,1 @@
-export * from "./questions";
-export * from "./questionsSchema";
+export * from "./get";

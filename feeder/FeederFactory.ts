@@ -87,9 +87,9 @@ export class FeederFactory {
     questions: AbstractQuestions[];
   }) => {
 
-    const foundCategories = currCategories.map(cat => cat.category);
+    const categoriesKeys = currCategories.map(cat => cat.category);
     const categoriesToAdd = categories.reduce((prev, curr) => {
-      if (!prev.includes(curr) || !foundCategories.includes(curr)) {
+      if (!categoriesKeys.includes(curr)) {
         prev.push(curr);
       }
 

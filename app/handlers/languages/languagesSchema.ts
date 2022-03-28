@@ -1,9 +1,19 @@
 import { generalErrors } from "@app/server/swagger/generalErrors";
 import { FastifySchema } from "fastify";
 
+export const languageSchema = {
+  type: "object",
+  required: ["id", "lang"],
+  properties: {
+    id: { type: "number" },
+    lang: { type: "string" },
+    previewName: { type: "string" },
+  }
+};
+
 export const languagesSchema: FastifySchema & Record<string, unknown> = {
   description: "Get languages",
-  tags: ["API"],
+  tags: ["language"],
   summary: "Languages",
   response: {
     "2xx": {
@@ -13,15 +23,7 @@ export const languagesSchema: FastifySchema & Record<string, unknown> = {
         isSuccess: { type: "boolean" },
         result: {
           type: "array",
-          items: {
-            type: "object",
-            required: ["id", "lang"],
-            properties: {
-              id: { type: "number" },
-              lang: { type: "string" },
-              previewName: { type: "string" },
-            }
-          }
+          items: languageSchema
         },
       }
     },

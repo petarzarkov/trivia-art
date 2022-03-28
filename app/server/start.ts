@@ -16,12 +16,17 @@ export const startServer = async (sq: Sequelize | undefined) => {
     requestIdLogLabel: "requestId",
   });
 
+  // app.addHook("onRequest", (request) => {
+  //   request.app = app;
+  // });
+
   app.setErrorHandler((error, _req, reply) => {
     if (error.validation) {
       reply.status(400).send(withError(error.message));
       return;
     }
 
+    app.logger.error("App Error", { err: error });
     reply.send(error);
   });
 
@@ -33,7 +38,7 @@ export const startServer = async (sq: Sequelize | undefined) => {
 
   app.ready(err => {
     if (err) {
-      app.logger.error("App Error", { err });
+      app.logger.error("App Error on ready", { err });
     }
 
     app.swagger();
