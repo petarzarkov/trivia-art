@@ -7,5 +7,11 @@ export const getOptions = (): Options => ({
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5445,
   dialect: process.env.DB_DIALECT as Dialect || "postgres",
-  ssl: process.env.NODE_ENV === "production"
+  ssl: process.env.NODE_ENV === "production",
+  dialectOptions: {
+    ssl: {
+      require: process.env.NODE_ENV === "production",
+      rejectUnauthorized: false
+    }
+  }
 });
