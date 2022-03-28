@@ -26,7 +26,7 @@ export const delByIdSchema = (type: string): FastifySchema & Record<string, unkn
   },
   security: [
     {
-      "apiKey": []
+      "apitoken": []
     }
   ]
 });

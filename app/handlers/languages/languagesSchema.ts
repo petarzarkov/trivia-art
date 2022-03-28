@@ -29,9 +29,4 @@ export const languagesSchema: FastifySchema & Record<string, unknown> = {
     },
     ...generalErrors
   },
-  security: [
-    {
-      "apiKey": []
-    }
-  ]
 };

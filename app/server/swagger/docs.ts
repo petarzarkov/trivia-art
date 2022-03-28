@@ -21,9 +21,9 @@ export const swagDocs: SwaggerOptions = {
       { name: "API", description: "API related end-points" },
     ],
     securityDefinitions: {
-      apiKey: {
+      apitoken: {
         type: "apiKey",
-        name: "apiKey",
+        name: "apitoken",
         in: "header"
       }
     },

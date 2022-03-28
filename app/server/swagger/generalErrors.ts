@@ -14,6 +14,10 @@ export const generalErrors = {
     description: "Bad request response",
     ...generalError
   },
+  401: {
+    description: "Unauthorized",
+    ...generalError
+  },
   404: {
     description: "Not found response",
     ...generalError

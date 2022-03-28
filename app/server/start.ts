@@ -6,28 +6,15 @@ import { apiRouter, serviceRouter } from "@app/routers";
 import { addSequelizePlugin, addLoggerPlugin } from "./plugins";
 import { swagDocs } from "./swagger";
 import { SERVER_PORT } from "@app/constants";
-import { withError } from "@contracts/APIResults";
+import { v4 } from "uuid";
 
-const log = HotLogger.createLogger("server");
+const log = HotLogger.createLogger("@trivia-art/server");
 
 export const startServer = async (sq: Sequelize | undefined) => {
   const app = fastify({
-    logger: true,
+    logger: false,
     requestIdLogLabel: "requestId",
-  });
-
-  // app.addHook("onRequest", (request) => {
-  //   request.app = app;
-  // });
-
-  app.setErrorHandler((error, _req, reply) => {
-    if (error.validation) {
-      reply.status(400).send(withError(error.message));
-      return;
-    }
-
-    app.logger.error("App Error", { err: error });
-    reply.send(error);
+    genReqId: () => v4()
   });
 
   app.register(addLoggerPlugin, { logger: log });
@@ -38,7 +25,7 @@ export const startServer = async (sq: Sequelize | undefined) => {
 
   app.ready(err => {
     if (err) {
-      app.logger.error("App Error on ready", { err });
+      app.logger.error("Error on ready", { err });
     }
 
     app.swagger();

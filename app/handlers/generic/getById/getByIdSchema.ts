@@ -27,7 +27,7 @@ export const getByIdSchema = (type: string): FastifySchema & Record<string, unkn
   },
   security: [
     {
-      "apiKey": []
+      "apitoken": []
     }
   ]
 });

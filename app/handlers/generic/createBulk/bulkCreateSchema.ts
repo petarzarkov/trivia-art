@@ -36,7 +36,7 @@ export const bulkCreateSchema = (type: string): FastifySchema & Record<string, u
     },
     security: [
       {
-        "apiKey": []
+        "apitoken": []
       }
     ]
   };
