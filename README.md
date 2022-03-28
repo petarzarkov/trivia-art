@@ -1,6 +1,8 @@
 # trivia-art
 
-## *WIP*
+## API
+
+[API docs](https://trivia-art.herokuapp.com/documentation)
 
 Trivia Art
 

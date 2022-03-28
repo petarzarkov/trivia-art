@@ -22,7 +22,9 @@
     "db:revert": "npm run predb && npm run db:seed:undo && npm run db:migrate:undo",
     "lint": "eslint -c .eslintrc.js --ext .ts,.tsx --max-warnings 0",
     "lint:fix": "npm run lint --fix",
-    "heroku-postbuild": "npm run db:update"
+    "heroku-prebuild": "npm ci",
+    "heroku-postbuild": "npm run db:update",
+    "heroku-cleanup": "npm install --only=prod"
   },
   "repository": {
     "type": "git",
