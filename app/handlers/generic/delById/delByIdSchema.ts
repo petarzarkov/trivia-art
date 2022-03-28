@@ -1,11 +1,10 @@
-import { getItemSchemaPerType } from "@app/handlers";
 import { generalErrors } from "@app/server/swagger/generalErrors";
 import { FastifySchema } from "fastify";
 
-export const getByIdSchema = (type: string): FastifySchema & Record<string, unknown> => ({
-  description: `Get ${type} by id`,
+export const delByIdSchema = (type: string): FastifySchema & Record<string, unknown> => ({
+  description: `Delete ${type} by id`,
   tags: [type],
-  summary: `Get ${type} by id`,
+  summary: `Delete ${type} by id`,
   params: {
     type: "object",
     additionalProperties: false,
@@ -20,7 +19,7 @@ export const getByIdSchema = (type: string): FastifySchema & Record<string, unkn
       type: "object",
       properties: {
         isSuccess: { type: "boolean" },
-        result: getItemSchemaPerType(type),
+        result: { type: "number" },
       }
     },
     ...generalErrors

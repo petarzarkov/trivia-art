@@ -1,5 +1,5 @@
 import { Model, Repository } from "sequelize-typescript";
-import { Attributes, Order, Transaction, WhereOptions } from "sequelize";
+import { Attributes, FindOptions, Order, Transaction, WhereOptions, UpdateOptions } from "sequelize";
 import { MakeNullishOptional } from "sequelize/types/utils";
 import { HotLogger } from "hot-utils";
 import { withError, withResult } from "@contracts/APIResults";
@@ -52,6 +52,14 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     }
   };
 
+  public count = async ({ where, requestId }: { where?: Partial<ModelDTO>; requestId?: string }) => {
+    return this.commit<number>({
+      requestId,
+      commandName: this.count.name,
+      command: () => this.table.count(<FindOptions<ModelClass>>{ where })
+    });
+  };
+
   public create = async ({ dto, transaction, requestId }: { dto: Omit<ModelDTO, "id"> & { id?: number }; transaction?: Transaction; requestId?: string }) => {
     return this.commit<ModelDTO | null>({
       requestId,
@@ -62,6 +70,19 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
       } as unknown as MakeNullishOptional<ModelClass["_creationAttributes"]>,
       { transaction })
         .then(r => r ? this.mapTableToDTO(r) : null)
+    });
+  };
+
+  public update = async ({ dto, transaction, where, requestId }: { dto: Omit<ModelDTO, "id"> & { id?: number }; where: Partial<ModelDTO>; transaction?: Transaction; requestId?: string }) => {
+    return this.commit<boolean>({
+      requestId,
+      commandName: this.update.name,
+      command: () => this.table.update({
+        ...dto,
+        id: dto.id,
+      } as unknown as MakeNullishOptional<ModelClass["_creationAttributes"]>,
+      { where, transaction } as unknown as UpdateOptions<ModelClass>)
+        .then(r => r[0] ? r[0] > 0 : false)
     });
   };
 
@@ -99,6 +120,14 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
       commandName: this.getById.name,
       command: () => this.table.findOne({ where: { id } })
         .then(r => r && this.mapTableToDTO(r))
+    });
+  };
+
+  public delById = async ({ id, requestId }: { id: number; requestId?: string }) => {
+    return this.commit<number>({
+      requestId,
+      commandName: this.delById.name,
+      command: () => this.table.destroy({ where: { id } })
     });
   };
 

@@ -8,9 +8,7 @@ export const questionSchema = {
   properties: {
     id: { type: "number" },
     categoryId: { type: "number" },
-    category: { type: "string" },
     languageId: { type: "number" },
-    lang: { type: "string" },
     difficulty: { type: "string" },
     question: { type: "string" },
     correctAnswer: { type: "string" },
@@ -40,7 +38,15 @@ export const questionsSchema: FastifySchema & Record<string, unknown> = {
         result: {
           type: "array",
           nullable: true,
-          items: questionSchema
+          items: {
+            type: questionSchema.type,
+            required: questionSchema.required,
+            properties: {
+              ...questionSchema.properties,
+              lang: { type: "string" },
+              category: { type: "string" },
+            }
+          }
         },
       }
     },

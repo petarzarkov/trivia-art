@@ -15,6 +15,7 @@ export class FeederFactory {
   numberOfFeeders: number;
   categoriesToAdd: Set<string>;
   questionsToAdd: AbstractQuestions[];
+  latestCreated: QuestionsDTO[];
 
   get isRunning() {
     return !!this._intervalId;
@@ -41,11 +42,15 @@ export class FeederFactory {
 
     if (this.categoriesToAdd.size || this.questionsToAdd.length) {
       log.info(`Feeding from ${this.opts.url}`, { questionsLength: this.questionsToAdd.length, newCategories: this.categoriesToAdd.size });
-      this.processQuestions({
+      const latest = await this.processQuestions({
         currCategories: currCategories.result,
         categories: [...this.categoriesToAdd],
         questions: this.questionsToAdd
       });
+
+      if (latest?.createdQuestions.isSuccess && latest.createdQuestions.result) {
+        this.latestCreated = latest.createdQuestions.result;
+      }
     }
   };
 
@@ -77,6 +82,9 @@ export class FeederFactory {
         });
 
         this.questionsToAdd = [...this.questionsToAdd, ...questions];
+        if (this.latestCreated.length) {
+          this.questionsToAdd = this.questionsToAdd.filter(qa => this.latestCreated.some(lc => lc.question !== qa.question));
+        }
       }
     });
   };
