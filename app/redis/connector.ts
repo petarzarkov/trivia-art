@@ -3,7 +3,7 @@ import Redis from "ioredis";
 
 const log = HotLogger.createLogger("@trivia-art/redis");
 
-export const REDIS_URL: string = process.env.REDIS_URL || "redis://:triviadev@localhost:6336";
+export const REDIS_URL: string = process.env.REDIS_TLS_URL || process.env.REDIS_URL || "redis://:triviadev@localhost:6336";
 
 export const connectRedis = async () => {
 
