@@ -20,10 +20,7 @@ jobs:
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git remote add origin https://github.com/petarzarkov/trivia-art.git
-        git fetch
-        git push origin deploy --force-with-lease
+        git commit -m "Deploy: ({sha}) {msg}"
+        git push -u origin deploy --force-with-lease
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        #"Deploy: ({sha}) {msg}"
