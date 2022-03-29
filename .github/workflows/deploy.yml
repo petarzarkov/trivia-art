@@ -16,17 +16,14 @@ jobs:
       with:
         persist-credentials: false
         fetch-depth: 0
-    # - name: Push to deploy branch
-    #   run: |
-    #     git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    #     git config --local user.name "github-actions[bot]"
-    #     git push origin deploy --force-with-lease
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Push to deploy branch
-      uses: s0/git-publish-subdir-action@develop
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git remote add origin https://github.com/petarzarkov/trivia-art.git
+        git fetch
+        git push origin deploy --force-with-lease
       env:
-        REPO: self
-        BRANCH: deploy
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-        MESSAGE: "Deploy: ({sha}) {msg}"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        #"Deploy: ({sha}) {msg}"
