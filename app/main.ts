@@ -1,12 +1,14 @@
 import { HotLogger } from "hot-utils";
 import { connect } from "@db/connector";
 import { startServer } from "@app/server";
+import { connectRedis } from "./redis";
 
 const log = HotLogger.createLogger("@trivia-art");
 
 const main = async () => {
   const sequelizeInstance = await connect();
-  await startServer(log, sequelizeInstance);
+  const redisInstance = await connectRedis();
+  await startServer(log, sequelizeInstance, redisInstance);
 };
 
 main().catch((err: Error) => {

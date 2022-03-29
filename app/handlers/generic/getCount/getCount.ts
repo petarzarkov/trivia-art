@@ -7,7 +7,7 @@ export const getCount = async (
   req: FastifyRequest<RouteGenericInterface, Server, IncomingMessage, unknown>,
   reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>
 ) => {
-  const count = await req.repo?.count({
+  const count = await (req.cache || req.repo)?.count({
     requestId: req.id
   });
 

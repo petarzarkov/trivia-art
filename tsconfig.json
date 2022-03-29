@@ -26,9 +26,8 @@
     "paths": {
       "@db/*": ["./database/*"],
       "@contracts/*": ["./contracts/*"],
-      "@feeder/*": ["./feeder/*"],
       "@app/*": ["./app/*"],
     }
   },
-  "include": ["./app", "./database", "./contracts", "./feeder"]
+  "include": ["./app", "./database", "./contracts"]
 }

@@ -1,4 +1,20 @@
-export const API_TOKEN = process.env.API_TOKEN ? process.env.API_TOKEN : "dev2api3token";
-export const SERVER_PORT = process.env.PORT ? (Number(process.env.PORT) || 3000) : 3000;
-export const MIN_QUESTIONS = process.env.MIN_QUESTIONS ? (Number(process.env.MIN_QUESTIONS) || 20) : 20;
-export const MAX_QUESTIONS = process.env.MAX_QUESTIONS ? (Number(process.env.MAX_QUESTIONS) || 100) : 100;
+/**
+ * @default "dev2api3token"
+ */
+export const API_TOKEN = process.env.API_TOKEN || "dev2api3token";
+/**
+ * @default 3000
+ */
+export const SERVER_PORT = Number(process.env.PORT) || 3000;
+/**
+ * @default 120000 ("2min")
+ */
+export const CACHE_REFRESH_INTERVAL = Number(process.env.CACHE_REFRESH_INTERVAL) || 2 * 60 * 1000;
+/**
+ * @default 20
+ */
+export const MIN_QUESTIONS = Number(process.env.MIN_QUESTIONS) || 20;
+/**
+ * @default 100
+ */
+export const MAX_QUESTIONS = Number(process.env.MAX_QUESTIONS) || 100;

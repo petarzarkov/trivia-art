@@ -24,9 +24,9 @@ const addRepo: FastifyPluginAsync = async (
 ) => {
 
   fastify.addHook("preHandler", (request, _reply, next) => {
-    const keyLookup = reposKeys.find(key => (request.raw.url || "").includes(key));
-    if (keyLookup) {
-      request.repo = repos[keyLookup as keyof typeof repos];
+    const keyLookupRepo = reposKeys.find(key => (request.raw.url || "").includes(key));
+    if (keyLookupRepo) {
+      request.repo = repos[keyLookupRepo as keyof typeof repos];
     }
 
     next();

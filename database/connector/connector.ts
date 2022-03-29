@@ -5,7 +5,7 @@ import { Model, ModelCtor, SequelizeOptions, Sequelize } from "sequelize-typescr
 import { TblCategories, TblLanguages, TblQuestions } from "@db/models";
 import { getOptions } from "@db/utils";
 
-const log = HotLogger.createLogger("db-connector");
+const log = HotLogger.createLogger("@trivia-art/db");
 
 export type DBModels = ModelCtor<Model<Record<string, unknown>, Record<string, unknown>>>[] | string[];
 
@@ -49,10 +49,10 @@ const establishConnection = async ({ config, models }: { config: SequelizeOption
 
   try {
     await sequelize.authenticate();
-    log?.info(`Connection has been established successfully to ${<string>config.database}`,
+    log.info(`Connection has been established successfully to ${<string>config.database}`,
       { data: { port: config.port } });
   } catch (err) {
-    log?.fatal(`Unable to connect to the ${<string>config.database} database`, { err: <Error>err, data: { config } });
+    log.fatal(`Unable to connect to the ${<string>config.database} database`, { err: <Error>err, data: { config } });
   }
 
   return sequelize;

@@ -1,6 +1,6 @@
 
 import { API_TOKEN } from "@app/constants";
-import { FeedsMgr } from "@feeder/FeederManager";
+import { FeedsMgr } from "@app/feeder";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -24,9 +24,11 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
   }, async (_, reply) => {
     try {
       await app.sq?.authenticate();
+      const pong = await app.redis?.ping();
 
       return {
-        healthy: true
+        dbHealthy: true,
+        redisHealthy: pong === "PONG"
       };
     } catch (error) {
       reply.status(500);

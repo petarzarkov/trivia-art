@@ -26,9 +26,10 @@ services:
     hostname: "trivia-redis"
     container_name: trivia-redis
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_PASSWORD=triviadev
+      - REDIS_PORT_NUMBER=6336
     ports:
-      - "6379:6379"
+      - "6336:6336"
     networks:
       - trivia-network
     healthcheck:

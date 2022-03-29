@@ -7,7 +7,7 @@ export const swagDocs: SwaggerOptions = {
     info: {
       title: "Trivia API swagger",
       description: "Trivia API explained",
-      version: "0.0.1",
+      version: process.env.npm_package_version || "0.0.1",
     },
     externalDocs: {
       url: "https://github.com/petarzarkov/trivia-art",

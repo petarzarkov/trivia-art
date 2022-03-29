@@ -30,18 +30,52 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
 
   fastify.addHook("onRequest", (request, _reply, done) => {
     request.logger = options.logger;
-    fastify.logger.info(`Received ${request.method} request`, { requestId: request.id, request: parseRequestLog(request) });
+    fastify.logger.info(`Received ${request.method} request`, {
+      requestId: request.id,
+      event: `${request.method}${request.url}`,
+      request: parseRequestLog(request)
+    });
+    done();
+  });
+
+  fastify.addHook("onSend", (request, reply, payload: Record<string, unknown>, done) => {
+    fastify.logger.info(`Sending ${request.method} response`, {
+      requestId: request.id,
+      event: `${request.method}${request.url}`,
+      responseTime: reply.getResponseTime(),
+      request: parseRequestLog(request),
+      response: {
+        payload
+      }
+    });
+
     done();
   });
 
   fastify.addHook("onResponse", (request, reply, done) => {
-    fastify.logger.info(`Completed ${request.method} request`, { requestId: request.id, responseTime: reply.getResponseTime(), request: parseRequestLog(request) });
+    fastify.logger.info(`Sent ${request.method} response`, {
+      requestId: request.id,
+      event: `${request.method}${request.url}`,
+      responseTime: reply.getResponseTime(),
+      request: parseRequestLog(request),
+      response: {
+        statusCode: reply.statusCode,
+        statusMessage: reply.raw.statusMessage,
+        sent: reply.sent,
+      }
+    });
+
     done();
   });
 
   fastify.setErrorHandler((error, req, reply) => {
     if (error.validation) {
-      fastify.logger.error(`Validation error on ${req.method} request`, { err: error, requestId: req.id, request: parseRequestLog(req) });
+      fastify.logger.error(`Validation error on ${req.method} request`, {
+        err: error,
+        requestId: req.id,
+        event: `${req.method}${req.url}`,
+        request: parseRequestLog(req)
+      });
       reply.status(400).send(withError(error.message));
       return;
     }
@@ -50,7 +84,13 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
   });
 
   fastify.addHook("onError", (request, reply, error, done) => {
-    fastify.logger.error(`Error on ${request.method} request`, { err: error, requestId: request.id, responseTime: reply.getResponseTime(), request: parseRequestLog(request) });
+    fastify.logger.error(`Error on ${request.method} request`, {
+      err: error,
+      requestId: request.id,
+      event: `${request.method}${request.url}`,
+      responseTime: reply.getResponseTime(),
+      request: parseRequestLog(request)
+    });
     done();
   });
 

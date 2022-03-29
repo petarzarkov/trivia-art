@@ -8,7 +8,7 @@ export const getById = async (
   reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>
 ) => {
   const { id } = req.params || {};
-  const findById = await req.repo?.getById({
+  const findById = await (req.cache || req.repo)?.getById({
     requestId: req.id,
     id
   });

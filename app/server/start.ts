@@ -3,12 +3,13 @@ import { fastifySwagger } from "fastify-swagger";
 import { Sequelize } from "sequelize";
 import { HotLogger } from "hot-utils";
 import { apiRouter, apiRouterAuth, serviceRouter } from "@app/routers";
-import { addSequelizePlugin, addLoggerPlugin } from "./plugins";
+import { addSqAndRedisPlugin, addLoggerPlugin, addCachePlugin } from "./plugins";
 import { swagDocs } from "./swagger";
 import { SERVER_PORT } from "@app/constants";
 import { v4 } from "uuid";
+import Redis from "ioredis";
 
-export const startServer = async (logger: HotLogger, sq: Sequelize | undefined) => {
+export const startServer = async (logger: HotLogger, sq?: Sequelize, redis?: Redis) => {
   const app = fastify({
     logger: false,
     requestIdLogLabel: "requestId",
@@ -17,7 +18,9 @@ export const startServer = async (logger: HotLogger, sq: Sequelize | undefined) 
 
   app.register(addLoggerPlugin, { logger });
   app.register(fastifySwagger, swagDocs);
-  app.register(addSequelizePlugin, { sq });
+  app.register(addSqAndRedisPlugin, { sq, redis }).after(() => {
+    app.register(addCachePlugin);
+  });
   app.register(apiRouter, { prefix: "api" });
   app.register(apiRouterAuth, { prefix: "api" });
   app.register(serviceRouter, { prefix: "service" });
@@ -31,8 +34,8 @@ export const startServer = async (logger: HotLogger, sq: Sequelize | undefined) 
   });
 
   try {
-    app.listen(SERVER_PORT, "0.0.0.0", () => {
-      app.logger.info("Service started", { port: SERVER_PORT });
+    app.listen(SERVER_PORT, "0.0.0.0", (_, address) => {
+      app.logger.info(`Service started ${process.env.NODE_ENV === "production" ? address : `http://localhost:${SERVER_PORT}`}`, { port: SERVER_PORT });
     });
   } catch (err) {
     app.logger.error("Error starting server", { err: <Error>err, port: SERVER_PORT });
