@@ -1,5 +1,5 @@
 
-import { API_TOKEN } from "@app/constants";
+import { API_TOKEN, APP_VERSION } from "@app/constants";
 import { FeedsMgr } from "@app/feeder";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
@@ -27,6 +27,7 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
       const pong = await app.redis?.ping();
 
       return {
+        version: APP_VERSION,
         dbHealthy: true,
         redisHealthy: pong === "PONG"
       };
