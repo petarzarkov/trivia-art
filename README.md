@@ -1,5 +1,7 @@
 # trivia-art
 
+- Over 8k+ unique questions
+
 ## API
 
 [API docs](https://trivia-art.herokuapp.com/documentation)
@@ -8,8 +10,10 @@ Trivia Art
 
 ## Development
 
-- Setup DB
-  - Build the image
-    - `docker build -f db.Dockerfile -t trivia-art:local .`
-  - Run it
-    - `docker container run -d -p 5445:5445 trivia-art:local`
+- Setup DB and Redis
+  - From root dir run
+    - `docker-compose up`
+- Start the service
+  - `npm install`
+  - `npm run db:update`
+  - `npm start`
