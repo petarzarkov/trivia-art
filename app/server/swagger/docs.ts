@@ -1,3 +1,4 @@
+import { APP_VERSION } from "@app/constants";
 import { SwaggerOptions } from "fastify-swagger";
 import { generalError } from "./generalErrors";
 
@@ -7,7 +8,7 @@ export const swagDocs: SwaggerOptions = {
     info: {
       title: "Trivia API swagger",
       description: "Trivia API explained",
-      version: process.env.npm_package_version || "0.0.1",
+      version: APP_VERSION,
     },
     externalDocs: {
       url: "https://github.com/petarzarkov/trivia-art",
