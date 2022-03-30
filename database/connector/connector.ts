@@ -33,21 +33,22 @@ export const connect = async ({ options, onConnect, models }:
 
 let sequelize: Sequelize | undefined;
 const establishConnection = async ({ config, models }: { config: SequelizeOptions; models?: DBModels }): Promise<Sequelize> => {
-  // On retry these steps are unessessary
-  if (!sequelize) {
-    const defaults: Partial<SequelizeOptions> = {
-      dialect: "postgres",
-      validateOnly: false,
-      pool: { max: 50 },
-      benchmark: true,
-      logging: false,
-      models: models || [TblLanguages, TblCategories, TblQuestions],
-      logQueryParameters: true,
-    };
-
-    sequelize = new Sequelize({ ...defaults, ...config });
+  // On retry clear old connection
+  if (sequelize) {
+    sequelize.close();
+    sequelize = undefined;
   }
 
+  const defaults: Partial<SequelizeOptions> = {
+    dialect: "postgres",
+    validateOnly: false,
+    pool: { max: 50 },
+    benchmark: true,
+    logging: false,
+    models: models || [TblLanguages, TblCategories, TblQuestions],
+    logQueryParameters: true,
+  };
+  sequelize = new Sequelize({ ...defaults, ...config });
   await sequelize.authenticate();
   log.info(`Connection has been established successfully to ${<string>config.database}`,
     { data: { port: config.port } });
