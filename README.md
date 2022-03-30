@@ -1,6 +1,6 @@
 # trivia-art
 
-- Over 8k+ unique questions
+- Over 9k+ unique questions
 
 ## API
 
@@ -17,5 +17,3 @@ Trivia Art
   - `npm install`
   - `npm run db:update`
   - `npm start`
-
-### re

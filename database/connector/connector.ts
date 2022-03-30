@@ -16,16 +16,17 @@ pg.types.setTypeParser(1231, parseFloat); // NUMERIC_ARRAY: 1231
 
 export const connect = async ({ options, onConnect, models }:
 { options?: Options; onConnect?: () => Promise<void>; models?: DBModels } = {}) => {
+  const config = options || getOptions();
   try {
-    const sequelizeInstance = await establishConnection({ config: options || getOptions(), models });
+    const sequelizeInstance = await establishConnection({ config, models });
     if (onConnect) {
       await onConnect();
     }
 
     return sequelizeInstance;
   } catch (error) {
-    log.error("Unable to connect DB, retrying", { err: <Error>error, options });
-    setTimeout(connect, 15000, options, onConnect, models);
+    log.error("Unable to connect DB, retrying", { err: <Error>error, config });
+    setTimeout(() => connect({ options: config, onConnect, models }), 15000);
     return;
   }
 };
@@ -47,13 +48,9 @@ const establishConnection = async ({ config, models }: { config: SequelizeOption
     sequelize = new Sequelize({ ...defaults, ...config });
   }
 
-  try {
-    await sequelize.authenticate();
-    log.info(`Connection has been established successfully to ${<string>config.database}`,
-      { data: { port: config.port } });
-  } catch (err) {
-    log.fatal(`Unable to connect to the ${<string>config.database} database`, { err: <Error>err, data: { config } });
-  }
+  await sequelize.authenticate();
+  log.info(`Connection has been established successfully to ${<string>config.database}`,
+    { data: { port: config.port } });
 
   return sequelize;
 };

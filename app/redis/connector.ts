@@ -15,7 +15,8 @@ export const connectRedis = async () => {
         tls: {
           rejectUnauthorized: false
         }
-      }
+      },
+      retryStrategy: (times: number) => Math.min(times * 100, 3000)
     }).on("connect", () => {
       log.info("Redis connected", { status: client.status });
     }).on("ready", () => {
