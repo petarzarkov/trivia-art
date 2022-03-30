@@ -28,11 +28,6 @@ export const swagDocs: SwaggerOptions = {
         description: "API token required in headers"
       }
     },
-    security: [
-      {
-        "apitoken": [process.env.NODE_ENV !== "production" ? "dev2api3token" : ""]
-      }
-    ],
     definitions: {
       "GeneralError": generalError
     },

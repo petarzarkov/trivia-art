@@ -1,4 +1,4 @@
-import SequelizeType, { QueryInterface } from "sequelize";
+import SequelizeType, { QueryInterface, DataTypes, literal } from "sequelize";
 
 module.exports = {
   up: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
@@ -6,8 +6,8 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
-        type: Sequelize.BIGINT
+        type: DataTypes.UUID,
+        defaultValue: literal("gen_random_uuid()")
       },
       lang: {
         allowNull: false,
@@ -20,7 +20,6 @@ module.exports = {
       },
     });
   },
-
   down: async (queryInterface: QueryInterface) => {
     await queryInterface.dropTable("tblLanguages", { force: true });
   }

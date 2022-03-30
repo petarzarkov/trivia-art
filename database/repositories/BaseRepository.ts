@@ -16,7 +16,7 @@ type CommonCommanderOpts<CommandReturnType> = {
   commandName?: string;
 };
 
-export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, ModelDTO extends { id: number }> {
+export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, ModelDTO extends { id: string }> {
   public table: Repository<ModelClass>;
   public tableName: string;
   public mapTableToDTO: (model: ModelClass) => ModelDTO;
@@ -86,7 +86,7 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     });
   };
 
-  public createBulk = async ({ dtos, transaction, requestId }: { dtos: (Omit<ModelDTO, "id"> & { id?: number })[]; transaction?: Transaction; requestId?: string }) => {
+  public createBulk = async ({ dtos, transaction, requestId }: { dtos: (Omit<ModelDTO, "id"> & { id?: string })[]; transaction?: Transaction; requestId?: string }) => {
     const attributeKeys = Object.keys(this.table.getAttributes()).filter(key => key !== "id") as unknown as (keyof ModelClass)[];
     return this.commit<ModelDTO[] | null>({
       requestId,
@@ -121,7 +121,7 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     });
   };
 
-  public getById = async ({ id, requestId }: { id: number; requestId?: string }) => {
+  public getById = async ({ id, requestId }: { id: string; requestId?: string }) => {
     return this.commit<ModelDTO | null>({
       requestId,
       commandName: this.getById.name,
@@ -130,7 +130,7 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     });
   };
 
-  public delById = async ({ id, requestId }: { id: number; requestId?: string }) => {
+  public delById = async ({ id, requestId }: { id: string; requestId?: string }) => {
     return this.commit<number>({
       requestId,
       commandName: this.delById.name,
@@ -138,7 +138,7 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
     });
   };
 
-  public delByIds = async ({ ids, requestId }: { ids: number[]; requestId?: string }) => {
+  public delByIds = async ({ ids, requestId }: { ids: string[]; requestId?: string }) => {
     return this.commit<number>({
       requestId,
       commandName: this.delByIds.name,

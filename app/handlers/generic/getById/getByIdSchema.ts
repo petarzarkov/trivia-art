@@ -11,7 +11,7 @@ export const getByIdSchema = (type: string): FastifySchema & Record<string, unkn
     additionalProperties: false,
     required: ["id"],
     properties: {
-      id: { type: "number" }
+      id: { type: "string", format: "uuid" }
     }
   },
   response: {

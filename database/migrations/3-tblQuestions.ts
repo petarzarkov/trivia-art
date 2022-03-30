@@ -1,4 +1,4 @@
-import SequelizeType, { QueryInterface } from "sequelize";
+import SequelizeType, { DataTypes, literal, QueryInterface } from "sequelize";
 
 module.exports = {
   up: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
@@ -6,8 +6,8 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
-        type: Sequelize.BIGINT
+        type: DataTypes.UUID,
+        defaultValue: literal("gen_random_uuid()")
       },
       question: {
         allowNull: false,
@@ -28,19 +28,16 @@ module.exports = {
         type: Sequelize.ARRAY(Sequelize.STRING)
       },
       categoryId: {
-        allowNull: true,
-        defaultValue: 1,
-        type: Sequelize.BIGINT,
+        allowNull: false,
+        type: Sequelize.UUID,
         references: {
           model: "tblCategories",
           key: "id"
-        },
-        onDelete: "SET DEFAULT"
+        }
       },
       languageId: {
-        defaultValue: 1,
-        allowNull: true,
-        type: Sequelize.BIGINT,
+        allowNull: false,
+        type: Sequelize.UUID,
         references: {
           model: "tblLanguages",
           key: "id"

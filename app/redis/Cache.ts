@@ -44,7 +44,7 @@ export class Cache<T, R = T> {
     }
   };
 
-  public getById = async ({ id, requestId }: { id: number; requestId?: string }): Promise<ISuccessResult<T> | IErrorResult> => {
+  public getById = async ({ id, requestId }: { id: string; requestId?: string }): Promise<ISuccessResult<T> | IErrorResult> => {
     const byId = await this.redis.hget(this.name, id.toString());
     try {
       return withResult(byId ? JSON.parse(byId) : undefined);

@@ -1,11 +1,14 @@
 import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
 
-@Table({ tableName: "tblLanguages", timestamps: false })
+@Table({
+  tableName: "tblLanguages",
+  timestamps: false
+})
 export class TblLanguages extends Model {
 
   @PrimaryKey
-  @Column({ allowNull: false, autoIncrement: true, type: DataType.BIGINT })
-  declare public id: number;
+  @Column({ autoIncrement: false, type: DataType.UUID, defaultValue: DataType.UUIDV4 })
+  declare public id: string;
 
   @Column({
     allowNull: false,
