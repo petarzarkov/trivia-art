@@ -26,7 +26,8 @@ module.exports = {
         references: {
           model: "tblLanguages",
           key: "id"
-        }
+        },
+        onDelete: "SET DEFAULT"
       },
     });
   },

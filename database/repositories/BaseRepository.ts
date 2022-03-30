@@ -87,11 +87,18 @@ export class BaseRepository<ModelClass extends Model<ModelClass, ModelDTO>, Mode
   };
 
   public createBulk = async ({ dtos, transaction, requestId }: { dtos: (Omit<ModelDTO, "id"> & { id?: number })[]; transaction?: Transaction; requestId?: string }) => {
+    const attributeKeys = Object.keys(this.table.getAttributes()).filter(key => key !== "id") as unknown as (keyof ModelClass)[];
     return this.commit<ModelDTO[] | null>({
       requestId,
       commandName: this.createBulk.name,
       command: (logging) => this.table.bulkCreate(dtos as unknown as MakeNullishOptional<ModelClass["_creationAttributes"]>[],
-        { transaction, validate: false, hooks: false, ignoreDuplicates: true, returning: true, logging })
+        {
+          transaction,
+          ignoreDuplicates: false,
+          updateOnDuplicate: attributeKeys,
+          returning: true,
+          logging
+        })
         .then(r => r ? r.map(this.mapTableToDTO) : null)
     });
   };

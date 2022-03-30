@@ -121,13 +121,20 @@ export class FeederFactory {
     }
 
     const allCategories: CategoriesDTO[] = addedCategories?.length ? [...currCategories, ...addedCategories] : [...currCategories];
-    const createdQuestions = await QuestionsRepo.createBulk({
-      dtos: questions.map(question => ({
-        ...question,
-        categoryId: allCategories.find(c => c.category === question.category)?.id || 1,
+    const dtos = questions.reduce((prev, curr) => {
+      if (prev.find(que => que.question === curr.question)) {
+        return prev;
+      }
+
+      prev.push({
+        ...curr,
+        categoryId: allCategories.find(c => c.category === curr.category)?.id || 1,
         languageId: 1,
-      }))
-    });
+      });
+
+      return prev;
+    }, [] as (Omit<QuestionsDTO, "id">)[]);
+    const createdQuestions = await QuestionsRepo.createBulk({ dtos });
 
     return {
       allCategories,
@@ -143,9 +150,10 @@ export class FeederFactory {
   };
 
   public stop = () => {
-    log.info(`Stopping trivia-art feeder for ${this.opts.url}`);
     if (this._intervalId) {
+      log.info(`Stopping trivia-art feeder for ${this.opts.url}`);
       clearInterval(this._intervalId);
+      this._intervalId = undefined;
     }
   };
 

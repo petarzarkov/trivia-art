@@ -8,12 +8,23 @@ import { swagDocs } from "./swagger";
 import { SERVER_PORT } from "@app/constants";
 import { v4 } from "uuid";
 import Redis from "ioredis";
+import Ajv from "ajv";
 
 export const startServer = async (logger: HotLogger, sq?: Sequelize, redis?: Redis) => {
   const app = fastify({
     logger: false,
     requestIdLogLabel: "requestId",
     genReqId: () => v4()
+  });
+
+  app.setValidatorCompiler(({ schema }) => {
+    const ajv = new Ajv({
+      removeAdditional: true,
+      useDefaults: true,
+      coerceTypes: false,
+      nullable: true
+    });
+    return ajv.compile(schema);
   });
 
   app.register(addLoggerPlugin, { logger });

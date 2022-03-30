@@ -1,7 +1,8 @@
 
 import { API_TOKEN, APP_VERSION } from "@app/constants";
 import { FeedsMgr } from "@app/feeder";
-import { FastifyInstance, FastifyPluginOptions } from "fastify";
+import { FastifyInstance, FastifyPluginOptions, FastifyRequest } from "fastify";
+import { Server, IncomingMessage } from "http";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptions, next: (err?: Error | undefined) => void) => {
@@ -41,9 +42,16 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
     }
   });
 
-  app.get("/feeds", {
+  app.post("/feeds", {
     schema: {
       tags: ["service"],
+      body: {
+        type: "object",
+        required: ["action"],
+        properties: {
+          action: { type: "string", enum: ["start", "stop"] },
+        }
+      },
       security: [
         {
           "apitoken": []
@@ -59,8 +67,8 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
 
       done();
     },
-    handler: async () => {
-      if (FeedsMgr.areRunning) {
+    handler: async (req: FastifyRequest<{ Body: { action: "start" | "stop" } }, Server, IncomingMessage, unknown>) => {
+      if (req.body.action === "stop") {
         FeedsMgr.stopAll();
 
         return {
@@ -68,7 +76,10 @@ export const serviceRouter = (app: FastifyInstance, _options: FastifyPluginOptio
         };
       }
 
-      FeedsMgr.startAll();
+      if (!FeedsMgr.areRunning) {
+        FeedsMgr.startAll();
+      }
+
       return {
         running: true
       };

@@ -5,7 +5,7 @@ export const languageSchema = {
   type: "object",
   required: ["id", "lang"],
   properties: {
-    id: { type: "number" },
+    id: { type: "integer" },
     lang: { type: "string" },
     previewName: { type: "string" },
   }

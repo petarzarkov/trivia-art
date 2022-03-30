@@ -6,13 +6,13 @@ export const questionSchema = {
   type: "object",
   required: ["id", "categoryId", "languageId", "difficulty", "question", "correctAnswer", "incorrectAnswers"],
   properties: {
-    id: { type: "number" },
-    categoryId: { type: "number" },
-    languageId: { type: "number" },
+    id: { type: "integer" },
+    categoryId: { type: "integer" },
+    languageId: { type: "integer" },
     difficulty: { type: "string" },
     question: { type: "string" },
     correctAnswer: { type: "string" },
-    incorrectAnswers: { type: "array", items: { type: "string" } },
+    incorrectAnswers: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 6 },
   }
 };
 

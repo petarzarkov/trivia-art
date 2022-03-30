@@ -5,10 +5,10 @@ export const categorySchema = {
   type: "object",
   required: ["id", "category", "languageId"],
   properties: {
-    id: { type: "number" },
+    id: { type: "integer" },
     category: { type: "string" },
     previewName: { type: "string" },
-    languageId: { type: "number" },
+    languageId: { type: "integer" },
   }
 };
 
