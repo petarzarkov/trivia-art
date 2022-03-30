@@ -1,7 +1,7 @@
+import { CategoriesDTO, LanguagesDTO } from "@db/repositories";
 import SequelizeType, { QueryInterface } from "sequelize";
 
 const baseQuestions = [{
-  categoryId: 2,
   difficulty: "medium",
   question: "What was the cause of death for Freddie Mercury?",
   correctAnswer: "Pneumonia",
@@ -13,8 +13,15 @@ const baseQuestions = [{
 }];
 
 module.exports = {
-  up: async (queryInterface: QueryInterface) => {
-    await queryInterface.bulkInsert("tblQuestions", baseQuestions, {});
+  up: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
+    const languages = await queryInterface.sequelize.query<LanguagesDTO>("SELECT * from \"tblLanguages\"", { type: Sequelize.QueryTypes.SELECT });
+    const categories = await queryInterface.sequelize.query<CategoriesDTO>("SELECT * from \"tblCategories\"", { type: Sequelize.QueryTypes.SELECT });
+    const questions = baseQuestions.map(q => ({
+      ...q,
+      categoryId: categories[0].id,
+      languageId: languages[0].id
+    }));
+    await queryInterface.bulkInsert("tblQuestions", questions, {});
   },
 
   down: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {

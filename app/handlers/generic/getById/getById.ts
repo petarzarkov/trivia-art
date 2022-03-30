@@ -4,7 +4,7 @@ import { Server, IncomingMessage, ServerResponse } from "http";
 import { withError } from "@contracts/APIResults";
 
 export const getById = async (
-  req: FastifyRequest<{ Params: { id: number } }, Server, IncomingMessage, unknown>,
+  req: FastifyRequest<{ Params: { id: string } }, Server, IncomingMessage, unknown>,
   reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>
 ) => {
   const { id } = req.params || {};

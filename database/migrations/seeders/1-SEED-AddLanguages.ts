@@ -1,6 +1,6 @@
 import SequelizeType, { QueryInterface } from "sequelize";
 
-const baseLangs = [{ id: 1, lang: "en", previewName: "English" }];
+const baseLangs = [{ lang: "en", previewName: "English" }];
 
 module.exports = {
   up: async (queryInterface: QueryInterface) => {

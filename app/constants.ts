@@ -1,7 +1,7 @@
 /**
  * @default "dev2api3token"
  */
-export const API_TOKEN = process.env.API_TOKEN || "dev2api3token";
+export const API_TOKEN = process.env.API_TOKEN || "dev";
 
 export const APP_VERSION = process.env.npm_package_version || "unknown";
 

@@ -1,4 +1,4 @@
-import { CategoriesDTO, CategoriesRepo, QuestionsDTO, QuestionsRepo } from "@db/repositories";
+import { CategoriesDTO, CategoriesRepo, LangRepo, LanguagesDTO, QuestionsDTO, QuestionsRepo } from "@db/repositories";
 import { Expand, HotLogger, HotRequests } from "hot-utils";
 import { decodeHtml, getRandomDifficulty } from "./utils";
 
@@ -16,6 +16,8 @@ export class FeederFactory {
   categoriesToAdd: Set<string>;
   questionsToAdd: AbstractQuestions[];
   latestCreated: QuestionsDTO[];
+  defaultLanguage: LanguagesDTO;
+  defaultCategory: CategoriesDTO;
 
   get isRunning() {
     return !!this._intervalId;
@@ -32,6 +34,20 @@ export class FeederFactory {
   private create = async () => {
     this.categoriesToAdd.clear();
     this.questionsToAdd = [];
+    const lang = await LangRepo.getLast();
+    if (!lang.isSuccess || !lang.result) {
+      return;
+    }
+
+    this.defaultLanguage = lang.result;
+
+    const category = await CategoriesRepo.getLast();
+    if (!category.isSuccess || !category.result) {
+      return;
+    }
+
+    this.defaultCategory = category.result;
+
     const currCategories = await CategoriesRepo.getAll();
     if (!currCategories.isSuccess || !currCategories?.result?.length) {
       return;
@@ -110,7 +126,7 @@ export class FeederFactory {
         dtos: categoriesToAdd.map(ca => ({
           category: ca,
           previewName: ca,
-          languageId: 1
+          languageId: this.defaultLanguage.id
         }))
       });
 
@@ -128,8 +144,8 @@ export class FeederFactory {
 
       prev.push({
         ...curr,
-        categoryId: allCategories.find(c => c.category === curr.category)?.id || 1,
-        languageId: 1,
+        categoryId: allCategories.find(c => c.category === curr.category)?.id || this.defaultCategory.id,
+        languageId: this.defaultLanguage.id,
       });
 
       return prev;

@@ -9,7 +9,7 @@ export const bulkDeleteSchema = (type: string): FastifySchema & Record<string, u
     body: {
       type: "array",
       items: {
-        type: "number",
+        type: "string",
       }
     },
     response: {

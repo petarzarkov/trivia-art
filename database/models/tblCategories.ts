@@ -1,12 +1,15 @@
 import { Default, Column, DataType, Model, PrimaryKey, Table, ForeignKey } from "sequelize-typescript";
 import TblLanguages from "./tblLanguages";
 
-@Table({ tableName: "tblCategories", timestamps: false })
+@Table({
+  tableName: "tblCategories",
+  timestamps: false
+})
 export class TblCategories extends Model {
 
   @PrimaryKey
-  @Column({ allowNull: false, autoIncrement: true, type: DataType.BIGINT })
-  declare public id: number;
+  @Column({ autoIncrement: false, type: DataType.UUID, defaultValue: DataType.UUIDV4 })
+  declare public id: string;
 
   @Column({
     allowNull: false,
@@ -20,9 +23,8 @@ export class TblCategories extends Model {
   declare public previewName?: string;
 
   @ForeignKey(() => TblLanguages)
-  @Default(1)
-  @Column({ allowNull: true, type: DataType.BIGINT })
-  declare public languageId: number;
+  @Column({ allowNull: false, type: DataType.UUID })
+  declare public languageId: string;
 }
 
 export default TblCategories;

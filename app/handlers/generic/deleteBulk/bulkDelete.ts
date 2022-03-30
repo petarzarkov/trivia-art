@@ -4,7 +4,7 @@ import { Server, IncomingMessage, ServerResponse } from "http";
 import { withError } from "@contracts/APIResults";
 
 export const bulkDelete = async (
-  req: FastifyRequest<{ Body: number[] }, Server, IncomingMessage, unknown>,
+  req: FastifyRequest<{ Body: string[] }, Server, IncomingMessage, unknown>,
   reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>
 ) => {
   const bulkDelete = await req.repo?.delByIds({

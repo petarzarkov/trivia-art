@@ -9,9 +9,9 @@ export const bulkCreateSchema = (type: string): FastifySchema & Record<string, u
   const [, ...required] = schema?.required || [];
 
   return {
-    description: `Bulk create ${type}`,
+    description: `Bulk create/edit ${type}`,
     tags: [type],
-    summary: `Bulk create ${type}`,
+    summary: `Bulk create/edit ${type}`,
     body: {
       type: "array",
       items: {

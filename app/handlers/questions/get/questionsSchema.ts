@@ -6,9 +6,9 @@ export const questionSchema = {
   type: "object",
   required: ["id", "categoryId", "languageId", "difficulty", "question", "correctAnswer", "incorrectAnswers"],
   properties: {
-    id: { type: "integer" },
-    categoryId: { type: "integer" },
-    languageId: { type: "integer" },
+    id: { type: "string", format: "uuid" },
+    categoryId: { type: "string", format: "uuid" },
+    languageId: { type: "string", format: "uuid" },
     difficulty: { type: "string" },
     question: { type: "string" },
     correctAnswer: { type: "string" },
