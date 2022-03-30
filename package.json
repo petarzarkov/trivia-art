@@ -1,6 +1,6 @@
 {
   "name": "trivia-art",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Trivia Art",
   "main": "build/app/main.js",
   "scripts": {
