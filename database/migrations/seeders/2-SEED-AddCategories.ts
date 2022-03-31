@@ -14,17 +14,26 @@ const baseCategories: (Omit<CategoriesDTO, "id" | "languageId">)[] = [
 
 module.exports = {
   up: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
-    const languages = await queryInterface.sequelize.query<LanguagesDTO>("SELECT * from \"tblLanguages\"", { type: Sequelize.QueryTypes.SELECT });
-    const cats = baseCategories.map(c => ({
-      ...c,
-      languageId: languages[0].id
-    }));
-    await queryInterface.bulkInsert("tblCategories", cats, {});
+    return queryInterface.sequelize.transaction(async transaction => {
+      const languages = await queryInterface.sequelize.query<LanguagesDTO>("SELECT * from \"tblLanguages\"", { type: Sequelize.QueryTypes.SELECT, transaction });
+      const cats = baseCategories.map(c => ({
+        ...c,
+        languageId: languages[0].id
+      }));
+      await queryInterface.bulkInsert("tblCategories", cats, { transaction });
+    });
+
   },
 
-  down: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
-    await queryInterface.bulkDelete(
-      "tblCategories",
-      { category: { [Sequelize.Op.in]: baseCategories.map(r => r.category) } });
+  down: async (queryInterface: QueryInterface) => {
+    return queryInterface.sequelize.transaction(async transaction => {
+      await queryInterface.bulkDelete(
+        "tblQuestions",
+        {}, { transaction });
+      await queryInterface.bulkDelete(
+        "tblCategories",
+        {}, { transaction });
+    });
   }
+
 };

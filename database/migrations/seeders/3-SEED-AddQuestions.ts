@@ -14,14 +14,17 @@ const baseQuestions = [{
 
 module.exports = {
   up: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
-    const languages = await queryInterface.sequelize.query<LanguagesDTO>("SELECT * from \"tblLanguages\"", { type: Sequelize.QueryTypes.SELECT });
-    const categories = await queryInterface.sequelize.query<CategoriesDTO>("SELECT * from \"tblCategories\"", { type: Sequelize.QueryTypes.SELECT });
-    const questions = baseQuestions.map(q => ({
-      ...q,
-      categoryId: categories[0].id,
-      languageId: languages[0].id
-    }));
-    await queryInterface.bulkInsert("tblQuestions", questions, {});
+    return queryInterface.sequelize.transaction(async transaction => {
+      const languages = await queryInterface.sequelize.query<LanguagesDTO>("SELECT * from \"tblLanguages\"", { type: Sequelize.QueryTypes.SELECT, transaction });
+      const categories = await queryInterface.sequelize.query<CategoriesDTO>("SELECT * from \"tblCategories\"", { type: Sequelize.QueryTypes.SELECT, transaction });
+      const questions = baseQuestions.map(q => ({
+        ...q,
+        categoryId: categories[0].id,
+        languageId: languages[0].id
+      }));
+      await queryInterface.bulkInsert("tblQuestions", questions, { transaction });
+    });
+
   },
 
   down: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {

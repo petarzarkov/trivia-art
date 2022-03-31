@@ -1,3 +1,4 @@
+import { isProd } from "@app/constants";
 import { Options, Dialect } from "sequelize";
 
 export const getOptions = (): Options => {
@@ -25,7 +26,7 @@ export const getOptions = (): Options => {
 
   return {
     ...baseConfig,
-    ...process.env.NODE_ENV === "production" && {
+    ...isProd && {
       ssl: true,
       dialectOptions: {
         ssl: {
