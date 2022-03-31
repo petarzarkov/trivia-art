@@ -1,3 +1,5 @@
+export const isProd = process.env.NODE_ENV === "production";
+
 /**
  * @default "dev2api3token"
  */

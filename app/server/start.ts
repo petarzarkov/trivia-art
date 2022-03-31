@@ -5,7 +5,7 @@ import { HotLogger } from "hot-utils";
 import { apiRouter, apiRouterAuth, serviceRouter } from "@app/routers";
 import { addSqAndRedisPlugin, addLoggerPlugin, addCachePlugin } from "./plugins";
 import { swagDocs } from "./swagger";
-import { SERVER_PORT } from "@app/constants";
+import { isProd, SERVER_PORT } from "@app/constants";
 import { v4 } from "uuid";
 import Redis from "ioredis";
 import Ajv from "ajv";
@@ -46,7 +46,7 @@ export const startServer = async (logger: HotLogger, sq?: Sequelize, redis?: Red
 
   try {
     app.listen(SERVER_PORT, "0.0.0.0", (_, address) => {
-      app.logger.info(`Service started ${process.env.NODE_ENV === "production" ? address : `http://localhost:${SERVER_PORT}`}`, { port: SERVER_PORT });
+      app.logger.info(`Service started ${isProd ? address : `http://localhost:${SERVER_PORT}`}`, { port: SERVER_PORT });
     });
   } catch (err) {
     app.logger.error("Error starting server", { err: <Error>err, port: SERVER_PORT });

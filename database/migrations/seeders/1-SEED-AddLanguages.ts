@@ -1,4 +1,4 @@
-import SequelizeType, { QueryInterface } from "sequelize";
+import { QueryInterface } from "sequelize";
 
 const baseLangs = [{ lang: "en", previewName: "English" }];
 
@@ -7,7 +7,7 @@ module.exports = {
     await queryInterface.bulkInsert("tblLanguages", baseLangs, {});
   },
 
-  down: async (queryInterface: QueryInterface, Sequelize: typeof SequelizeType) => {
-    await queryInterface.bulkDelete("tblLanguages", { lang: { [Sequelize.Op.in]: baseLangs.map(r => r.lang) } });
+  down: async (queryInterface: QueryInterface) => {
+    await queryInterface.bulkDelete("tblLanguages", {});
   }
 };

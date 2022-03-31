@@ -1,4 +1,4 @@
-import { APP_VERSION } from "@app/constants";
+import { APP_VERSION, isProd } from "@app/constants";
 import { SwaggerOptions } from "fastify-swagger";
 import { generalError } from "./generalErrors";
 
@@ -14,7 +14,7 @@ export const swagDocs: SwaggerOptions = {
       url: "https://github.com/petarzarkov/trivia-art",
       description: "Find more info here"
     },
-    schemes: [process.env.NODE_ENV === "production" ? "https" : "http"],
+    schemes: [isProd ? "https" : "http"],
     consumes: ["application/json"],
     produces: ["application/json"],
     tags: [

@@ -1,3 +1,4 @@
+import { isProd } from "@app/constants";
 import { HotLogger } from "hot-utils";
 import Redis from "ioredis";
 
@@ -11,7 +12,7 @@ export const connectRedis = async () => {
     const client = new Redis(REDIS_URL, {
       enableOfflineQueue: false,
       enableAutoPipelining: true,
-      ...process.env.NODE_ENV === "production" && {
+      ...isProd && {
         tls: {
           rejectUnauthorized: false
         }
