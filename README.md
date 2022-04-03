@@ -1,6 +1,6 @@
-<div align="center">
+<div align="center" style="background-color: rgb(149 150 150 / 35%); border-radius: 10px;">
   <h1>❔ Trivia Art</h1>
-  <p>API for over 9k+ unique trivia questions</p>
+  <p>API with over 9k+ unique trivia questions</p>
   <a href="https://github.com/petarzarkov/trivia-art/actions/"><img src="https://github.com/petarzarkov/trivia-art/actions/workflows/build.yml/badge.svg?branch=main" alt="Build status"></a>
   <a href="https://github.com/petarzarkov/trivia-art/blob/main/LICENSE"><img src="https://img.shields.io/github/license/petarzarkov/trivia-art" alt="License"></a>
   <p style="color: gray;">Stack</p>
@@ -18,9 +18,8 @@
 
 ## API
 
-[API docs](https://trivia-art.herokuapp.com/documentation)
-
-Trivia Art
+- [API docs](https://trivia-art.herokuapp.com/documentation)
+- [Get questions](https://trivia-art.herokuapp.com/api/questions?amount=25)
 
 ## Development
 
