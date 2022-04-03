@@ -18,14 +18,20 @@ export const startServer = async (logger: HotLogger, sq?: Sequelize, redis?: Red
     genReqId: () => v4()
   });
 
-  app.setValidatorCompiler(({ schema }) => {
-    const ajv = new Ajv({
+  app.setValidatorCompiler(({ schema, httpPart }) => {
+    const defaultSchema = new Ajv({
       removeAdditional: true,
       useDefaults: true,
       coerceTypes: false,
       nullable: true
     });
-    return ajv.compile(schema);
+    const querySchema = new Ajv({
+      removeAdditional: true,
+      useDefaults: true,
+      coerceTypes: true,
+      nullable: true
+    });
+    return httpPart === "querystring" ? querySchema.compile(schema) : defaultSchema.compile(schema);
   });
 
   app.register(fcors);
