@@ -1,4 +1,5 @@
 import { fastify } from "fastify";
+import fcors from "fastify-cors";
 import { fastifySwagger } from "fastify-swagger";
 import { Sequelize } from "sequelize";
 import { HotLogger } from "hot-utils";
@@ -27,6 +28,7 @@ export const startServer = async (logger: HotLogger, sq?: Sequelize, redis?: Red
     return ajv.compile(schema);
   });
 
+  app.register(fcors);
   app.register(addLoggerPlugin, { logger });
   app.register(fastifySwagger, swagDocs);
   app.register(addSqAndRedisPlugin, { sq, redis }).after(() => {

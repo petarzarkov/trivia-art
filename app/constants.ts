@@ -10,7 +10,7 @@ export const APP_VERSION = process.env.npm_package_version || "unknown";
 /**
  * @default 3000
  */
-export const SERVER_PORT = Number(process.env.PORT) || 3000;
+export const SERVER_PORT = Number(process.env.PORT) || 3001;
 
 /**
  * @default 120000 ("2min")
