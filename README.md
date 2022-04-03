@@ -1,4 +1,4 @@
-# trivia-art
+# ❔ Trivia Art
 
 - Over 9k+ unique questions
 

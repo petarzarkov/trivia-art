@@ -44,6 +44,7 @@
   "dependencies": {
     "config": "^3.3.7",
     "fastify": "^3.27.4",
+    "fastify-cors": "^6.0.3",
     "fastify-plugin": "^3.0.1",
     "fastify-swagger": "^5.0.0",
     "hot-utils": "^1.3.6",
