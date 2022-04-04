@@ -4,7 +4,7 @@ import { fastifySwagger } from "fastify-swagger";
 import { Sequelize } from "sequelize";
 import { HotLogger } from "hot-utils";
 import { apiRouter, apiRouterAuth, serviceRouter } from "@app/routers";
-import { addSqAndRedisPlugin, addLoggerPlugin, addCachePlugin } from "./plugins";
+import { addStoragePlugin, addLoggerPlugin, addCachePlugin } from "./plugins";
 import { swagDocs } from "./swagger";
 import { isProd, SERVER_PORT } from "@app/constants";
 import { v4 } from "uuid";
@@ -37,7 +37,7 @@ export const startServer = async (logger: HotLogger, sq?: Sequelize, redis?: Red
   app.register(fcors);
   app.register(addLoggerPlugin, { logger });
   app.register(fastifySwagger, swagDocs);
-  app.register(addSqAndRedisPlugin, { sq, redis }).after(() => {
+  app.register(addStoragePlugin, { sq, redis }).after(() => {
     app.register(addCachePlugin);
   });
   app.register(apiRouter, { prefix: "api" });

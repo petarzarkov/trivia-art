@@ -1,7 +1,9 @@
 import { withError } from "@contracts/APIResults";
 import { FastifyPluginAsync, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
+import { RouteGenericInterface } from "fastify/types/route";
 import { HotLogger } from "hot-utils";
+import { Server, IncomingMessage } from "http";
 
 // Declaration merging
 declare module "fastify" {
@@ -19,8 +21,13 @@ const parseRequestLog = (request: FastifyRequest) => ({
   path: request.routerPath,
   parameters: request.params,
   body: request.body,
-  query: request.query
+  query: request.query,
+  headers: request.headers
 });
+
+const buildEvent = (
+  request: FastifyRequest<RouteGenericInterface, Server, IncomingMessage, unknown>
+) => `${request.method}:${request.routerPath}`;
 
 const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
   fastify,
@@ -32,16 +39,17 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
     request.logger = options.logger;
     fastify.logger.info(`Received ${request.method} request`, {
       requestId: request.id,
-      event: `${request.method}${request.url}`,
+      event: buildEvent(request),
       request: parseRequestLog(request)
     });
+
     done();
   });
 
   fastify.addHook("onSend", (request, reply, payload: Record<string, unknown>, done) => {
     fastify.logger.info(`Sending ${request.method} response`, {
       requestId: request.id,
-      event: `${request.method}${request.url}`,
+      event: buildEvent(request),
       responseTime: reply.getResponseTime(),
       request: parseRequestLog(request),
       response: {
@@ -55,13 +63,14 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
   fastify.addHook("onResponse", (request, reply, done) => {
     fastify.logger.info(`Sent ${request.method} response`, {
       requestId: request.id,
-      event: `${request.method}${request.url}`,
+      event: buildEvent(request),
       responseTime: reply.getResponseTime(),
       request: parseRequestLog(request),
       response: {
         statusCode: reply.statusCode,
         statusMessage: reply.raw.statusMessage,
         sent: reply.sent,
+        headers: reply.getHeaders()
       }
     });
 
@@ -73,7 +82,7 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
       fastify.logger.error(`Validation error on ${req.method} request`, {
         err: error,
         requestId: req.id,
-        event: `${req.method}${req.url}`,
+        event: buildEvent(req),
         request: parseRequestLog(req)
       });
       reply.status(400).send(withError(error.message));
@@ -87,10 +96,11 @@ const addLogger: FastifyPluginAsync<{ logger: HotLogger }> = async (
     fastify.logger.error(`Error on ${request.method} request`, {
       err: error,
       requestId: request.id,
-      event: `${request.method}${request.url}`,
+      event: buildEvent(request),
       responseTime: reply.getResponseTime(),
       request: parseRequestLog(request)
     });
+
     done();
   });
 

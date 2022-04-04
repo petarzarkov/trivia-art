@@ -9,8 +9,8 @@ export const bulkCreate = async (
   reply: FastifyReply<Server, IncomingMessage, ServerResponse, RouteGenericInterface, unknown>
 ) => {
   const bulkCreate = await req.repo?.createBulk({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dtos: req.body as any
+    // It's really a union type, not an intersection, but TS inference sucks here
+    dtos: req.body as CategoriesDTO[] & QuestionsDTO[] & LanguagesDTO[]
   });
 
   if (!bulkCreate?.isSuccess) {

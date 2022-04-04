@@ -18,7 +18,7 @@ export const swagDocs: SwaggerOptions = {
     consumes: ["application/json"],
     produces: ["application/json"],
     tags: [
-      { name: "API", description: "API related end-points" },
+      { name: "Service", description: "Service related end-points" },
     ],
     securityDefinitions: {
       apitoken: {

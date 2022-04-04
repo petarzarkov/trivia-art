@@ -6,13 +6,13 @@ module.exports = {
             {
                 key: "event",
                 values: [
-                    "GET/documentation/*"
+                    "GET:/documentation/*"
                 ]
             },
         ],
         serializers: [{
             key: "event",
-            values: ["GET/api/questions"],
+            values: ["GET:/api/questions"],
             modifiers: [{ properties: ["response.payload"] }]
         }]
     }

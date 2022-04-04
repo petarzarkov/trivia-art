@@ -1,7 +1,7 @@
 export const isProd = process.env.NODE_ENV === "production";
 
 /**
- * @default "dev2api3token"
+ * @default "dev"
  */
 export const API_TOKEN = process.env.API_TOKEN || "dev";
 
