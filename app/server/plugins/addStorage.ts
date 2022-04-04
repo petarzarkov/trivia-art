@@ -9,14 +9,25 @@ declare module "fastify" {
     sq: Sequelize | undefined;
     redis: Redis | undefined;
   }
+  export interface FastifyRequest {
+    sq: Sequelize | undefined;
+    redis: Redis | undefined;
+  }
 }
 
-const addSequelizeAndRedis: FastifyPluginAsync<{ sq?: Sequelize; redis?: Redis }> = async (
+const addStorage: FastifyPluginAsync<{ sq?: Sequelize; redis?: Redis }> = async (
   fastify,
   options
 ) => {
   fastify.decorate("sq", options.sq);
   fastify.decorate("redis", options.redis);
+
+  fastify.addHook("preHandler", (request, _reply, next) => {
+    request.sq = options.sq;
+    request.redis = options.redis;
+
+    next();
+  });
 };
 
-export const addSqAndRedisPlugin = fp(addSequelizeAndRedis);
+export const addStoragePlugin = fp(addStorage);
